@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ProjectTransitionProvider } from "./_components/projects/project-transition";
+import { ViewerProvider } from "./_components/viewer-provider";
 import { UiClickSound } from "./_components/ui-click-sound";
 import "./globals.css";
 
@@ -20,7 +21,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className="antialiased site-motion:scroll-smooth">
       <body>
         <UiClickSound />
-        <ProjectTransitionProvider>{children}</ProjectTransitionProvider>
+        <ViewerProvider>
+          <ProjectTransitionProvider>{children}</ProjectTransitionProvider>
+        </ViewerProvider>
       </body>
     </html>
   );

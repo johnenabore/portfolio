@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { setUiSoundsEnabled } from "@/lib/ui-sounds";
 import { heroNavigation } from "./hero-content";
+import { ViewerStats } from "./viewer-stats";
 
 const menuLinks = [{ label: "Home", href: "#home" }, ...heroNavigation];
 const menuButtonClass = "size-[2.9em] min-h-11 min-w-11 rounded-full border border-[#353535] bg-[linear-gradient(#242424,#171717_55%)] shadow-[0_.25rem_.65rem_#0004]";
@@ -188,7 +189,7 @@ export function HeroMenu() {
               <h2 id={titleId} className="text-xs font-medium tracking-[.18em] uppercase">Portfolio menu</h2>
             </header>
 
-            <div className="grid flex-1 content-center gap-x-[8%] gap-y-10 py-[clamp(2rem,9dvh,7rem)] md:grid-cols-[1fr_minmax(15rem,22rem)]">
+            <div className="grid flex-1 content-center gap-x-[8%] gap-y-7 py-[clamp(1.5rem,5dvh,4rem)] md:grid-cols-[1fr_minmax(15rem,22rem)]">
               <nav aria-label="Portfolio sections">
                 <ul className="list-none border-t border-white/20 p-0">
                   {menuLinks.map(({ label, href, count }) => href && (
@@ -209,30 +210,33 @@ export function HeroMenu() {
                 </ul>
               </nav>
 
-              <section aria-labelledby={`${titleId}-accessibility`} className="self-end">
-                <h3 id={`${titleId}-accessibility`} className="mb-3 text-xs font-medium tracking-[.18em] text-white/75 uppercase">Accessibility</h3>
-                <Button
-                  type="button"
-                  role="switch"
-                  aria-checked={reduceMotion}
-                  aria-label="Reduce motion"
-                  onClick={toggleMotion}
-                  className="h-auto min-h-12 w-full justify-between rounded-none border-t border-white/20 bg-transparent px-2 py-3 hover:bg-white/10"
-                >
-                  Reduce motion <span aria-hidden="true" className="text-white/75">{reduceMotion ? "On" : "Off"}</span>
-                </Button>
-                <Button
-                  type="button"
-                  role="switch"
-                  aria-checked={soundEnabled}
-                  aria-label="Sound effects"
-                  onClick={toggleSound}
-                  className="h-auto min-h-12 w-full justify-between rounded-none border-y border-white/20 bg-transparent px-2 py-3 hover:bg-white/10"
-                >
-                  Sound effects <span aria-hidden="true" className="text-white/75">{soundEnabled ? "On" : "Off"}</span>
-                </Button>
-                <p className="mt-3 text-xs leading-relaxed text-white/75">Your device’s reduced-motion setting also applies.</p>
-              </section>
+              <div className="self-end">
+                <section aria-labelledby={`${titleId}-accessibility`}>
+                  <h3 id={`${titleId}-accessibility`} className="mb-3 text-xs font-medium tracking-[.18em] text-white/75 uppercase">Accessibility</h3>
+                  <Button
+                    type="button"
+                    role="switch"
+                    aria-checked={reduceMotion}
+                    aria-label="Reduce motion"
+                    onClick={toggleMotion}
+                    className="h-auto min-h-12 w-full justify-between rounded-none border-t border-white/20 bg-transparent px-2 py-3 hover:bg-white/10"
+                  >
+                    Reduce motion <span aria-hidden="true" className="text-white/75">{reduceMotion ? "On" : "Off"}</span>
+                  </Button>
+                  <Button
+                    type="button"
+                    role="switch"
+                    aria-checked={soundEnabled}
+                    aria-label="Sound effects"
+                    onClick={toggleSound}
+                    className="h-auto min-h-12 w-full justify-between rounded-none border-y border-white/20 bg-transparent px-2 py-3 hover:bg-white/10"
+                  >
+                    Sound effects <span aria-hidden="true" className="text-white/75">{soundEnabled ? "On" : "Off"}</span>
+                  </Button>
+                  <p className="mt-3 text-xs leading-relaxed text-white/75">Your device’s reduced-motion setting also applies.</p>
+                </section>
+                <ViewerStats />
+              </div>
             </div>
           </div>
         </div>
