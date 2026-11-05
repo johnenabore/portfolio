@@ -195,7 +195,7 @@ export function ProjectScreenshots({ shots }: { shots: readonly Screenshot[] }) 
               tabIndex={position === "hidden" ? -1 : undefined}
               onClick={(event) => centered ? expand(event.currentTarget) : setActive(index)}
               className={cn(
-                "group/card absolute top-1/2 left-1/2 aspect-[2/3] w-[34%] cursor-pointer overflow-hidden rounded-[clamp(.65rem,2vw,1.2rem)] bg-primary text-left text-white shadow-[0_.6rem_1.5rem_#18211c32] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring data-viewing:[filter:opacity(0)] site-motion:transition-[translate,rotate,scale,opacity] site-motion:duration-500 site-motion:ease-hero-intro",
+                "group/card absolute top-1/2 left-1/2 aspect-[2/3] w-[34%] cursor-pointer overflow-hidden rounded-[clamp(.65rem,2vw,1.2rem)] bg-primary text-left text-white shadow-[0_.6rem_1.5rem_#18211c32] focus-visible:brightness-125 data-viewing:[filter:opacity(0)] site-motion:transition-[translate,rotate,scale,opacity] site-motion:duration-500 site-motion:ease-hero-intro",
                 positions[position],
               )}
             >
@@ -255,7 +255,7 @@ export function ProjectScreenshots({ shots }: { shots: readonly Screenshot[] }) 
         <div className="mx-auto grid min-h-full w-[min(92vw,54rem)] content-center py-5">
           <div className="mb-3 flex items-center justify-between gap-3 group-data-closing/viewer:opacity-0 site-motion:transition-opacity site-motion:duration-150">
             <h3 id={titleId} className="text-base font-medium sm:text-lg">{selected.title}</h3>
-            <Button type="button" variant="ghost" size="sm" className="min-h-11 px-3 text-white/80 not-disabled:hover:bg-white/10 not-disabled:hover:text-white focus-visible:ring-white" onClick={closeViewer}>
+            <Button type="button" variant="ghost" size="sm" className="min-h-11 px-3 text-white/80 not-disabled:hover:bg-white/10 not-disabled:hover:text-white" onClick={closeViewer}>
               Close <span aria-hidden="true">×</span>
             </Button>
           </div>

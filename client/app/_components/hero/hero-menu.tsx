@@ -8,14 +8,20 @@ import { heroNavigation } from "./hero-content";
 const menuLinks = [{ label: "Home", href: "#home" }, ...heroNavigation];
 const menuButtonClass = "size-[2.9em] min-h-11 min-w-11 rounded-full border border-[#353535] bg-[linear-gradient(#242424,#171717_55%)] shadow-[0_.25rem_.65rem_#0004]";
 
-function MenuIcon() {
+function canAnimateMenu() {
+  return typeof Element.prototype.animate === "function" &&
+    window.matchMedia("(prefers-reduced-motion: no-preference)").matches &&
+    !document.documentElement.hasAttribute("data-reduce-motion");
+}
+
+function MenuIcon({ expanded = false }: { expanded?: boolean }) {
   const line = "origin-center site-motion:transition-[translate,rotate,opacity] site-motion:duration-300 site-motion:ease-in-out";
 
   return (
     <svg aria-hidden="true" className="size-[1.15em]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-      <path d="M4 12h16" className={`${line} -translate-y-[6px] group-open/menu:translate-y-0 group-open/menu:rotate-45 group-open/menu:starting:-translate-y-[6px] group-open/menu:starting:rotate-0`} />
-      <path d="M4 12h16" className={`${line} group-open/menu:opacity-0 group-open/menu:starting:opacity-100`} />
-      <path d="M4 12h16" className={`${line} translate-y-[6px] group-open/menu:translate-y-0 group-open/menu:-rotate-45 group-open/menu:starting:translate-y-[6px] group-open/menu:starting:rotate-0`} />
+      <path d="M4 12h16" className={[line, expanded ? "rotate-45 starting:-translate-y-[6px] starting:rotate-0" : "-translate-y-[6px]"].join(" ")} />
+      <path d="M4 12h16" className={[line, expanded ? "opacity-0 starting:opacity-100" : "opacity-100"].join(" ")} />
+      <path d="M4 12h16" className={[line, expanded ? "-rotate-45 starting:translate-y-[6px] starting:rotate-0" : "translate-y-[6px]"].join(" ")} />
     </svg>
   );
 }
@@ -23,6 +29,7 @@ function MenuIcon() {
 export function HeroMenu() {
   const dialog = useRef<HTMLDialogElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
+  const animation = useRef<Animation | null>(null);
   const dialogId = useId();
   const titleId = useId();
   const [open, setOpen] = useState(false);
@@ -44,7 +51,10 @@ export function HeroMenu() {
     menu.style.setProperty("--menu-origin-y", `${y}px`);
     menu.style.setProperty("--menu-trigger-size", `${button.width}px`);
     menu.style.setProperty("--menu-viewport-width", `${width}px`);
-    menu.style.setProperty("--menu-radius", `${Math.ceil(radius)}px`);
+    return {
+      closed: `circle(${button.width / 2 + 4}px at ${x}px ${y}px)`,
+      open: `circle(${Math.ceil(radius)}px at ${x}px ${y}px)`,
+    };
   }
 
   useEffect(() => {
@@ -57,27 +67,73 @@ export function HeroMenu() {
     const menu = dialog.current;
     if (!menu || menu.open) return;
 
-    positionMenu();
-    if (!menu.hasAttribute("data-scroll-lock")) {
-      const root = document.documentElement;
-      root.style.setProperty("--menu-scrollbar-width", `${window.innerWidth - root.clientWidth}px`);
-      menu.setAttribute("data-scroll-lock", "");
-    }
+    const clips = positionMenu();
+    if (!clips) return;
+    const root = document.documentElement;
+    root.style.setProperty("--menu-scrollbar-width", `${window.innerWidth - root.clientWidth}px`);
+    menu.setAttribute("data-scroll-lock", "");
+    menu.removeAttribute("data-closing");
+    trigger.current?.focus({ preventScroll: true });
     menu.showModal();
     setOpen(true);
+
+    animation.current?.cancel();
+    if (canAnimateMenu()) {
+      animation.current = menu.animate(
+        [{ clipPath: clips.closed }, { clipPath: clips.open }],
+        { duration: 640, easing: "cubic-bezier(.32, 0, .23, 1)" },
+      );
+    }
   }
 
-  async function finishClose() {
+  function finishClose() {
     const menu = dialog.current;
     if (!menu || menu.open) return;
 
+    animation.current?.cancel();
+    animation.current = null;
     setOpen(false);
-    await Promise.allSettled(menu.getAnimations().map((animation) => animation.finished));
-    if (menu.open) return;
-
+    menu.removeAttribute("data-closing");
     menu.removeAttribute("data-scroll-lock");
     document.documentElement.style.removeProperty("--menu-scrollbar-width");
   }
+
+  function closeMenu(href?: string) {
+    const menu = dialog.current;
+    if (!menu?.open || menu.hasAttribute("data-closing")) return;
+
+    const clips = positionMenu();
+    const from = getComputedStyle(menu).clipPath;
+    animation.current?.cancel();
+    menu.setAttribute("data-closing", "");
+    setOpen(false);
+
+    const finish = () => {
+      menu.close();
+      finishClose();
+      if (href) {
+        window.location.hash = href;
+        document.getElementById(href.slice(1))?.focus({ preventScroll: true });
+      }
+    };
+
+    if (!clips || !canAnimateMenu()) {
+      finish();
+      return;
+    }
+
+    const closing = menu.animate(
+      [{ clipPath: from === "none" ? clips.open : from }, { clipPath: clips.closed }],
+      { duration: 440, easing: "cubic-bezier(.45, 0, .25, 1)", fill: "forwards" },
+    );
+    animation.current = closing;
+    void closing.finished.then(finish).catch(() => {});
+  }
+
+  useEffect(() => () => {
+    animation.current?.cancel();
+    document.documentElement.style.removeProperty("--menu-scrollbar-width");
+  }, []);
 
   function toggleMotion() {
     document.documentElement.toggleAttribute("data-reduce-motion", !reduceMotion);
@@ -111,16 +167,20 @@ export function HeroMenu() {
         data-portfolio-menu
         aria-labelledby={titleId}
         onClose={finishClose}
-        className="group/menu fixed inset-0 m-0 h-dvh max-h-none w-(--menu-viewport-width) max-w-none overflow-hidden bg-primary text-primary-foreground backdrop:bg-transparent"
+        onCancel={(event) => {
+          event.preventDefault();
+          closeMenu();
+        }}
+        className="fixed inset-0 m-0 h-dvh max-h-none w-(--menu-viewport-width) max-w-none overflow-hidden bg-primary text-primary-foreground backdrop:bg-transparent"
       >
         <Button
           type="button"
           aria-label="Close navigation"
           size="icon"
-          className={`${menuButtonClass} absolute top-(--menu-origin-y) left-(--menu-origin-x) z-10 size-(--menu-trigger-size) -translate-1/2 focus-visible:ring-white`}
-          onClick={() => dialog.current?.close()}
+          className={`${menuButtonClass} absolute top-(--menu-origin-y) left-(--menu-origin-x) z-10 size-(--menu-trigger-size) -translate-1/2`}
+          onClick={() => closeMenu()}
         >
-          <MenuIcon />
+          <MenuIcon expanded={open} />
         </Button>
         <div className="h-full overflow-y-auto overscroll-contain [scrollbar-width:none]">
           <div className="mx-auto flex min-h-full w-[90%] max-w-[90rem] flex-col py-[clamp(1.35rem,3.7dvh,3rem)]">
@@ -135,8 +195,11 @@ export function HeroMenu() {
                     <li key={label} className="border-b border-white/20">
                       <a
                         href={href}
-                        onClick={() => dialog.current?.close()}
-                        className="flex items-center justify-between gap-4 py-3 text-[clamp(2.5rem,7vw,7.5rem)] leading-[.95] font-semibold tracking-[-.065em] uppercase hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-4"
+                        onClick={(event) => {
+                          event.preventDefault();
+                          closeMenu(href);
+                        }}
+                        className="flex items-center justify-between gap-4 py-3 text-[clamp(2.5rem,7vw,7.5rem)] leading-[.95] font-semibold tracking-[-.065em] uppercase hover:bg-white/10"
                       >
                         <span>{label}</span>
                         {count && <span className="text-sm font-normal tracking-normal text-white/70">[{count}]</span>}
@@ -154,7 +217,7 @@ export function HeroMenu() {
                   aria-checked={reduceMotion}
                   aria-label="Reduce motion"
                   onClick={toggleMotion}
-                  className="h-auto min-h-12 w-full justify-between rounded-none border-t border-white/20 bg-transparent px-2 py-3 hover:bg-white/10 focus-visible:ring-white"
+                  className="h-auto min-h-12 w-full justify-between rounded-none border-t border-white/20 bg-transparent px-2 py-3 hover:bg-white/10"
                 >
                   Reduce motion <span aria-hidden="true" className="text-white/75">{reduceMotion ? "On" : "Off"}</span>
                 </Button>
@@ -164,7 +227,7 @@ export function HeroMenu() {
                   aria-checked={soundEnabled}
                   aria-label="Sound effects"
                   onClick={toggleSound}
-                  className="h-auto min-h-12 w-full justify-between rounded-none border-y border-white/20 bg-transparent px-2 py-3 hover:bg-white/10 focus-visible:ring-white"
+                  className="h-auto min-h-12 w-full justify-between rounded-none border-y border-white/20 bg-transparent px-2 py-3 hover:bg-white/10"
                 >
                   Sound effects <span aria-hidden="true" className="text-white/75">{soundEnabled ? "On" : "Off"}</span>
                 </Button>

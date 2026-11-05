@@ -64,7 +64,7 @@ export function SectionRail() {
                 href={`#${id}`}
                 aria-label={label}
                 aria-current={selected ? "location" : undefined}
-                className={cn("group/marker relative grid size-11 place-items-center rounded-full focus-visible:outline-2 focus-visible:-outline-offset-2", dark ? "text-white" : "text-foreground")}
+                className={cn("group/marker relative grid size-11 place-items-center rounded-full", dark ? "text-white" : "text-foreground")}
               >
                 <span
                   aria-hidden="true"

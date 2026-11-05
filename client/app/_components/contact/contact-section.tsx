@@ -29,7 +29,7 @@ export function ContactSection() {
             </span>
           </p>
           <div className={cn("mt-6 flex flex-wrap items-center gap-x-4 gap-y-3 [--section-enter-delay:.45s]", reveal)}>
-            <Button asChild variant="outline" size="pill" className="min-h-11 border-white bg-white px-5 text-sm font-medium text-primary focus-visible:ring-white">
+            <Button asChild variant="outline" size="pill" className="min-h-11 border-white bg-white px-5 text-sm font-medium text-primary">
               <a href={`mailto:${portfolioLinks.contactEmail}`}>
                 Email me
                 <svg aria-hidden="true" viewBox="0 0 16 16" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">

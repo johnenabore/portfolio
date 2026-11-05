@@ -41,11 +41,11 @@ export function FeaturedProject({ project, placeholder, onPreview }: {
         ) : null}
         <div className="mt-6">
           {href ? (
-            <Button asChild size="pill" variant="outline" className="min-h-11 text-sm text-foreground focus-visible:ring-white">
+            <Button asChild size="pill" variant="outline" className="min-h-11 text-sm text-foreground">
               <ProjectLink href={href} projectTitle={title} className="after:absolute after:inset-0 after:z-10">{action}</ProjectLink>
             </Button>
           ) : (
-            <Button type="button" size="pill" variant="outline" className="min-h-11 text-sm text-foreground focus-visible:ring-white" aria-haspopup="dialog" onClick={() => onPreview(project)}>
+            <Button type="button" size="pill" variant="outline" className="min-h-11 text-sm text-foreground" aria-haspopup="dialog" onClick={() => onPreview(project)}>
               {action}
             </Button>
           )}

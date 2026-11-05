@@ -42,7 +42,7 @@ export function ProjectCard({
         {href ? arrow : (
           <button
             type="button"
-            className="absolute inset-0 cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white"
+            className="absolute inset-0 cursor-pointer"
             aria-label={`Preview ${title}`}
             aria-haspopup="dialog"
             onClick={() => onPreview(project)}
@@ -76,7 +76,7 @@ export function ProjectCard({
       style={{ animationDelay: `${880 + Math.min(index, 3) * 120}ms` }}
     >
       {href ? (
-        <ProjectLink href={href} projectTitle={title} className="group/card block h-full focus-visible:outline-2 focus-visible:outline-ring">
+        <ProjectLink href={href} projectTitle={title} className="group/card block h-full focus-visible:brightness-95">
           {content}
         </ProjectLink>
       ) : (

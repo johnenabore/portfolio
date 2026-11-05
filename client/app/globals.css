@@ -131,6 +131,21 @@
   );
 }
 
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :focus {
+    outline: none;
+  }
+
+  :where(a, button):focus-visible {
+    text-decoration-line: underline;
+    text-underline-offset: .2em;
+  }
+}
+
 body {
   background: #f5f5f5;
   color: var(--foreground);
@@ -162,27 +177,6 @@ html:has([data-portfolio-menu][data-scroll-lock]) {
 
 html:has([data-portfolio-menu][data-scroll-lock]) body {
   padding-inline-end: var(--menu-scrollbar-width, 0px);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  :root:not([data-reduce-motion]) [data-portfolio-menu] {
-    --menu-origin: var(--menu-origin-x, 95%) var(--menu-origin-y, 5%);
-    --menu-closed-radius: calc(var(--menu-trigger-size, 44px) / 2 + 4px);
-    clip-path: circle(var(--menu-closed-radius) at var(--menu-origin));
-    transition: clip-path .44s cubic-bezier(.45, 0, .25, 1), display .44s allow-discrete, overlay .44s allow-discrete;
-  }
-
-  :root:not([data-reduce-motion]) [data-portfolio-menu][open] {
-    clip-path: circle(var(--menu-radius, 142vmax) at var(--menu-origin));
-    transition-duration: .64s;
-    transition-timing-function: cubic-bezier(.32, 0, .23, 1);
-  }
-
-  @starting-style {
-    :root:not([data-reduce-motion]) [data-portfolio-menu][open] {
-      clip-path: circle(var(--menu-closed-radius) at var(--menu-origin));
-    }
-  }
 }
 
 html[data-project-transition] [data-project-entry] {

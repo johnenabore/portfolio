@@ -104,7 +104,7 @@ export function DevelopmentIntro() {
           <Button
             variant="ghost"
             onClick={dismiss}
-            className="min-h-11 rounded-full px-4 text-sm text-[#f0f1eb] not-disabled:hover:bg-white/10 not-disabled:hover:text-white focus-visible:ring-[#b5c7aa]"
+            className="min-h-11 rounded-full px-4 text-sm text-[#f0f1eb] not-disabled:hover:bg-white/10 not-disabled:hover:text-white"
           >
             Explore portfolio <span aria-hidden="true">↗</span>
           </Button>
