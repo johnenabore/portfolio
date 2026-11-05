@@ -137,6 +137,13 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Native snapping keeps touch momentum within each section, including tall sections. */
+@media (hover: none) and (pointer: coarse) and (prefers-reduced-motion: no-preference) {
+  html:not([data-reduce-motion]):not([data-section-snapping]):has(main > [data-scroll-section]) {
+    scroll-snap-type: y mandatory;
+  }
+}
+
 html:has([data-development-intro][open]) {
   overflow: hidden;
 }

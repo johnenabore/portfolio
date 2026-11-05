@@ -122,7 +122,7 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
         ref={curtain}
         data-project-curtain
         aria-hidden="true"
-        className="pointer-events-none invisible fixed inset-0 z-[100] grid place-items-center bg-primary px-6 text-center text-primary-foreground data-active:pointer-events-auto data-active:visible"
+        className="pointer-events-none invisible fixed inset-0 z-[100] grid place-items-center bg-[linear-gradient(var(--primary),var(--primary))] px-6 text-center text-primary-foreground data-active:pointer-events-auto data-active:visible"
       >
         <div>
           <p className="mb-3 text-xs font-medium tracking-[.2em] text-white/65 uppercase">Project</p>

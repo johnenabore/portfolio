@@ -34,6 +34,7 @@ export function SectionScroll() {
 
     const root = document.documentElement;
     const motion = window.matchMedia("(prefers-reduced-motion: no-preference)");
+    const nativeTouch = window.matchMedia("(hover: none) and (pointer: coarse)");
     let transition: Transition | undefined;
     let landing: Pick<Transition, "direction" | "lastWheelAt"> | undefined;
     let glide: Glide | undefined;
@@ -52,6 +53,7 @@ export function SectionScroll() {
       cancelTouchSettle();
       transition = undefined;
       landing = undefined;
+      root.removeAttribute("data-section-snapping");
     }
 
     function stopGlide() {
@@ -107,6 +109,7 @@ export function SectionScroll() {
       const top = Math.min(target, root.scrollHeight - root.clientHeight);
       const active: Transition = { frame: 0, direction, lastWheelAt: now };
       stopGlide();
+      root.setAttribute("data-section-snapping", "");
       transition = active;
 
       function animate(time: number) {
@@ -125,6 +128,7 @@ export function SectionScroll() {
         }
 
         transition = undefined;
+        root.removeAttribute("data-section-snapping");
         landing = { direction, lastWheelAt: active.lastWheelAt };
         if (active.reverseDelta) move(active.reverseDelta, time);
       }
@@ -193,6 +197,7 @@ export function SectionScroll() {
       const { deltaMode, deltaX, deltaY } = event;
       if (
         !motionEnabled() ||
+        nativeTouch.matches ||
         event.defaultPrevented ||
         !event.cancelable ||
         event.ctrlKey ||
@@ -232,7 +237,6 @@ export function SectionScroll() {
     }
 
     function startTouch(event: TouchEvent) {
-      window.removeEventListener("touchmove", moveTouch);
       cancelTouchSettle();
       touch = undefined;
       if (!motionEnabled() || event.touches.length !== 1 || inDialog(event.target)) return;
@@ -241,11 +245,6 @@ export function SectionScroll() {
       const top = window.scrollY;
       const bounds = sectionBounds(top);
       touch = { x: clientX, y: clientY, top, bounds };
-      // A swipe inside a long section can stay on the browser's passive scroll path.
-      if ((bounds.next !== undefined && top >= bounds.end - snapApproach) ||
-          (bounds.previous !== undefined && top <= bounds.start + snapApproach)) {
-        window.addEventListener("touchmove", moveTouch, { passive: false });
-      }
     }
 
     function moveTouch(event: TouchEvent) {
@@ -260,26 +259,23 @@ export function SectionScroll() {
       const target = distance > 0
         ? (touch.top >= end - snapApproach ? next : undefined)
         : (touch.top <= start + snapApproach ? previous : undefined);
-      if (target === undefined) {
-        window.removeEventListener("touchmove", moveTouch);
-        return;
-      }
+      if (target === undefined) return;
 
       event.preventDefault();
       if (Math.abs(distance) >= 24) touch.target = target;
     }
 
     function endTouch(event: TouchEvent) {
-      window.removeEventListener("touchmove", moveTouch);
       const gesture = touch;
       touch = undefined;
       if (event.type !== "touchend" || !gesture || !motionEnabled()) return;
 
       if (gesture.target !== undefined) {
-        window.scrollTo({ top: gesture.target, behavior: "smooth" });
+        snapTo(gesture.target, Math.sign(gesture.target - window.scrollY), performance.now());
         return;
       }
 
+      if (nativeTouch.matches) return;
       const end = event.changedTouches[0];
       if (!end || Math.abs(gesture.y - end.clientY) < Math.max(12, Math.abs(gesture.x - end.clientX))) return;
       settlingTouch = gesture;
@@ -288,6 +284,8 @@ export function SectionScroll() {
 
     window.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("touchstart", startTouch, { passive: true });
+    // Register before the gesture so Safari can cancel an edge swipe from its first move.
+    window.addEventListener("touchmove", moveTouch, { passive: false });
     window.addEventListener("scroll", scheduleTouchSettle, { passive: true });
     window.addEventListener("touchend", endTouch);
     window.addEventListener("touchcancel", endTouch);
