@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { EggSorterPlaceholder } from "@/app/_components/projects/egg-sorter-placeholder";
+import { ProjectScreenshots } from "@/app/_components/projects/project-screenshots";
 import { sectionFont } from "@/app/fonts";
 import { Badge } from "@/components/ui/badge";
-import { smartEggSorter } from "@/data/smart-egg-sorter";
+import { smartEggSorter, smartEggSorterClips } from "@/data/smart-egg-sorter";
 
 const title = "Smart Egg Sorter | John Enabore";
 const description = smartEggSorter.description;
@@ -18,15 +19,15 @@ export const metadata: Metadata = {
 const sections = [
   { id: "overview", label: "Overview" },
   { id: "walkthrough", label: "Walkthrough" },
-  { id: "screenshots", label: "Screenshots" },
+  { id: "screenshots", label: "Screenshots & clips" },
   { id: "technical-notes", label: "Technical notes" },
   { id: "outcome", label: "Outcome" },
 ];
 
 const steps = [
-  { title: "Pair the device", description: "Connect to the ESP32 over its local Wi-Fi network." },
-  { title: "Detect an egg", description: "Show how the app receives live events from the infrared sensor." },
-  { title: "Review the classification", description: "Show how the app classifies the egg’s species on the device." },
+  { title: "Pair the device", description: "Pairing takes place over the ESP32’s local Wi-Fi network." },
+  { title: "Detect an egg", description: "The infrared sensor sends an event to the app when it detects an egg." },
+  { title: "Review the classification", description: "The app displays the species classification computed on the device." },
 ];
 
 function BackToProjects() {
@@ -131,18 +132,9 @@ export default function SmartEggSorterPage() {
               </section>
 
               <section id="screenshots" tabIndex={-1} className="scroll-mt-8">
-                <h2 className="mb-4 text-3xl font-semibold tracking-[-.045em] sm:text-4xl">Screenshots</h2>
-                <div className="grid gap-4 sm:grid-cols-3">
-                  {steps.map(({ title }, index) => (
-                    <figure key={title} className="overflow-hidden rounded-xl border border-border">
-                      <div className="grid aspect-[4/3] place-content-center justify-items-center gap-2 bg-[#e9ede4] px-3 text-center text-[#3a6245]">
-                        <span aria-hidden="true" className="font-mono text-2xl">0{index + 1}</span>
-                        <span className="text-xs font-medium">Screenshot placeholder</span>
-                      </div>
-                      <figcaption className="px-3 py-3 text-sm font-medium">{title}</figcaption>
-                    </figure>
-                  ))}
-                </div>
+                <h2 className="mb-2 text-3xl font-semibold tracking-[-.045em] sm:text-4xl">Screenshots &amp; clips</h2>
+                <p className="mb-4 text-sm text-ring">Choose a card, then press play to watch the clip.</p>
+                <ProjectScreenshots shots={smartEggSorterClips} />
               </section>
 
               <section id="technical-notes" tabIndex={-1} className="scroll-mt-8">

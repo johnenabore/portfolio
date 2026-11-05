@@ -1,3 +1,4 @@
+import { DevelopmentIntro } from "./_components/development-intro";
 import { AboutSection } from "./_components/about/about-section";
 import { ContactSection } from "./_components/contact/contact-section";
 import { Hero } from "./_components/hero/hero";
@@ -8,6 +9,7 @@ import { SectionScroll } from "./_components/section-scroll";
 export default function Home() {
   return (
     <main>
+      <DevelopmentIntro />
       <SectionScroll />
       <SectionRail />
       <Hero />

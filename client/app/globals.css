@@ -137,6 +137,18 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+html:has([data-development-intro][open]) {
+  overflow: hidden;
+}
+
+html:has([data-development-intro][open]) body {
+  padding-inline-end: var(--intro-scrollbar-width, 0px);
+}
+
+html:has([data-development-intro][open]) #home * {
+  animation-play-state: paused;
+}
+
 html:has([data-portfolio-menu][data-scroll-lock]) {
   overflow: hidden;
 }
@@ -172,4 +184,12 @@ html[data-project-transition] [data-project-entry] {
 
 html:has([data-project-curtain][data-active]) {
   overflow-anchor: none;
+}
+
+html:has([data-screenshot-viewer][open]) {
+  overflow: hidden;
+}
+
+html:has([data-screenshot-viewer][open]) body {
+  padding-inline-end: var(--screenshot-scrollbar-width, 0px);
 }

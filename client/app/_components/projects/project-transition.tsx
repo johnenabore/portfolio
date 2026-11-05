@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { playUiSound } from "@/lib/ui-sounds";
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ComponentProps, type ReactNode } from "react";
 
 type ProjectNavigation = (href: string, title: string) => boolean;
@@ -15,7 +16,15 @@ type CurtainRun = {
 };
 
 const ProjectNavigationContext = createContext<ProjectNavigation | null>(null);
-const covered = "translate3d(0, 0, 0)";
+const closingClip = [
+  { clipPath: "polygon(100% 100%, 100% 100%, 100% 100%)" },
+  { clipPath: "polygon(100% -100%, 100% 100%, -100% 100%)" },
+];
+const openingClip = [
+  { clipPath: "polygon(0% 0%, 200% 0%, 0% 200%)" },
+  { clipPath: "polygon(0% 0%, 0% 0%, 0% 0%)" },
+];
+const sweepDuration = 1000;
 const easing = "cubic-bezier(.65, 0, .35, 1)";
 
 export function ProjectTransitionProvider({ children }: { children: ReactNode }) {
@@ -38,8 +47,8 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
     document.documentElement.removeAttribute("data-project-transition");
 
     const opening = element.animate(
-      [{ transform: covered }, { transform: "translate3d(0, -100%, 0)" }],
-      { duration: 520, easing, fill: "forwards" },
+      openingClip,
+      { duration: sweepDuration, easing, fill: "forwards" },
     );
     run.animation.cancel();
     run.animation = opening;
@@ -78,6 +87,7 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
       pathname !== "/" ||
       !href.startsWith("/projects/") ||
       !element?.animate ||
+      !CSS.supports("clip-path", closingClip[0].clipPath) ||
       !window.matchMedia("(prefers-reduced-motion: no-preference)").matches ||
       root.hasAttribute("data-reduce-motion")
     ) return false;
@@ -86,8 +96,8 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
     element.setAttribute("data-active", "");
     root.setAttribute("data-project-transition", "");
     const closing = element.animate(
-      [{ transform: "translate3d(0, 100%, 0)" }, { transform: covered }],
-      { duration: 390, easing, fill: "forwards" },
+      closingClip,
+      { duration: sweepDuration, easing, fill: "forwards" },
     );
     const run: CurtainRun = {
       source: pathname,
@@ -97,6 +107,7 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
       opening: false,
     };
     active.current = run;
+    playUiSound("projectSweep");
 
     void closing.finished.then(() => {
       if (active.current === run && !run.opening) router.push(href);
@@ -111,7 +122,7 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
         ref={curtain}
         data-project-curtain
         aria-hidden="true"
-        className="pointer-events-none invisible fixed inset-0 z-[100] grid place-items-center bg-primary px-6 text-center text-primary-foreground [transform:translate3d(0,100%,0)] data-active:pointer-events-auto data-active:visible"
+        className="pointer-events-none invisible fixed inset-0 z-[100] grid place-items-center bg-primary px-6 text-center text-primary-foreground data-active:pointer-events-auto data-active:visible"
       >
         <div>
           <p className="mb-3 text-xs font-medium tracking-[.2em] text-white/65 uppercase">Project</p>
@@ -127,13 +138,17 @@ export function ProjectLink({ projectTitle, href, ...props }: Omit<ComponentProp
   projectTitle: string;
 }) {
   const navigate = useContext(ProjectNavigationContext);
+  const projectRoute = href.startsWith("/projects/");
 
   return (
     <Link
       {...props}
       href={href}
+      data-project-transition-link={projectRoute ? "" : undefined}
       onNavigate={(event) => {
+        if (!projectRoute) return;
         if (navigate?.(href, projectTitle)) event.preventDefault();
+        else playUiSound("click");
       }}
     />
   );

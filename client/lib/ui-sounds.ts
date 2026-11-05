@@ -1,10 +1,11 @@
-// Kenney Interface Sounds, CC0.
-const soundFiles = {
-  click: "/sounds/click_002.ogg",
-  error: "/sounds/error_003.ogg",
+const sounds = {
+  // Kenney Interface Sounds, CC0.
+  click: { src: "/sounds/click_002.ogg", volume: 0.65 },
+  error: { src: "/sounds/error_003.ogg", volume: 0.35 },
+  projectSweep: { src: "/sounds/soft-fade.wav", volume: 1 },
 } as const;
 
-type UiSound = keyof typeof soundFiles;
+type UiSound = keyof typeof sounds;
 const tracks: Partial<Record<UiSound, HTMLAudioElement>> = {};
 let soundsEnabled = true;
 
@@ -16,8 +17,9 @@ export function setUiSoundsEnabled(enabled: boolean) {
 export function playUiSound(sound: UiSound) {
   if (!soundsEnabled) return;
 
-  const track = (tracks[sound] ??= new Audio(soundFiles[sound]));
-  track.volume = sound === "click" ? 0.65 : 0.35;
+  const { src, volume } = sounds[sound];
+  const track = (tracks[sound] ??= new Audio(src));
+  track.volume = volume;
   track.currentTime = 0;
 
   // Audio may be blocked by browser playback settings.
