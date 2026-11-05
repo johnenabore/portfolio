@@ -6,7 +6,7 @@ export function HeroTitle() {
   return (
     <h1
       id="hero-title"
-      className="absolute inset-x-[4.7%] top-[23.1%] m-0 [--hero-slide-from:-65%] motion-safe:animate-hero-title compact:relative compact:inset-auto compact:mt-[clamp(2.75rem,9vw,4.5rem)]"
+      className="absolute inset-x-[4.7%] top-[23.1%] m-0 [--hero-slide-from:-65%] site-motion:animate-hero-title compact:relative compact:inset-auto compact:mt-[clamp(2.75rem,9vw,4.5rem)]"
     >
       <span className="sr-only">{first} {last}</span>
       <svg

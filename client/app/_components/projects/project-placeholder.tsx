@@ -1,5 +1,6 @@
 import { useId } from "react";
 import type { ProjectArtwork } from "@/data/projects";
+import { EggSorterPlaceholder } from "./egg-sorter-placeholder";
 
 const backgrounds = {
   web: "bg-[radial-gradient(ellipse_at_50%_85%,#78345f_0%,#392635_60%,#211d21_100%)]",
@@ -10,6 +11,8 @@ const backgrounds = {
 
 export function ProjectPlaceholder({ artwork = "web" }: { artwork?: ProjectArtwork }) {
   const gradient = useId();
+  if (artwork === "egg-sorter") return <EggSorterPlaceholder />;
+
   return (
     <svg
       aria-hidden="true"

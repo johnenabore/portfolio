@@ -25,7 +25,7 @@ export function HeroPortrait() {
 
   return (
     <figure
-      className="group/portrait pointer-events-none absolute bottom-0 left-[51.5%] z-1 m-0 aspect-[4/3] h-[min(65.5%,44vw)] -translate-x-1/2 motion-safe:animate-hero-portrait compact:relative compact:inset-auto compact:mx-auto compact:mt-[-2.5%] compact:h-auto compact:w-[min(100%,34rem)] compact:translate-none"
+      className="group/portrait pointer-events-none absolute bottom-0 left-[51.5%] z-1 m-0 aspect-[4/3] h-[min(65.5%,44vw)] -translate-x-1/2 site-motion:animate-hero-portrait compact:relative compact:inset-auto compact:mx-auto compact:mt-[-2.5%] compact:h-auto compact:w-[min(100%,34rem)] compact:translate-none"
       onPointerEnter={moveReveal}
       onPointerMove={moveReveal}
       onPointerLeave={hideReveal}
@@ -40,7 +40,7 @@ export function HeroPortrait() {
         loading="eager"
       />
       <div
-        className="portrait-reveal-mask absolute inset-0 opacity-0 motion-safe:transition-opacity motion-safe:duration-250 motion-safe:ease-[ease] fine-pointer:group-data-[reveal-active]/portrait:opacity-100"
+        className="portrait-reveal-mask absolute inset-0 opacity-0 site-motion:transition-opacity site-motion:duration-250 site-motion:ease-[ease] fine-pointer:group-data-[reveal-active]/portrait:opacity-100"
         aria-hidden="true"
       >
         <Image src={portraitSrc} alt="" fill sizes={portraitSizes} />

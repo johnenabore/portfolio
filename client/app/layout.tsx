@@ -1,18 +1,26 @@
 import type { Metadata } from "next";
+import { ProjectTransitionProvider } from "./_components/projects/project-transition";
 import { UiClickSound } from "./_components/ui-click-sound";
 import "./globals.css";
 
+const title = "John Enabore | Developer Portfolio";
+const description = "John Enabore’s portfolio. Explore web development and computer vision projects, view his résumé, or get in touch.";
+const siteUrl = process.env.PORTFOLIO_SITE_URL;
+
 export const metadata: Metadata = {
-  title: "Portfolio",
-  description: "A personal portfolio.",
+  ...(siteUrl && { metadataBase: new URL(siteUrl) }),
+  title,
+  description,
+  openGraph: { type: "website", siteName: "John Enabore Portfolio", title, description },
+  twitter: { card: "summary_large_image", title, description },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className="antialiased motion-safe:snap-y motion-safe:snap-proximity motion-safe:scroll-smooth motion-safe:[@media(pointer:coarse)]:snap-mandatory">
+    <html lang="en" className="antialiased site-motion:scroll-smooth site-motion:[@media(pointer:coarse)]:snap-y site-motion:[@media(pointer:coarse)]:snap-mandatory">
       <body>
         <UiClickSound />
-        {children}
+        <ProjectTransitionProvider>{children}</ProjectTransitionProvider>
       </body>
     </html>
   );

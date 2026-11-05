@@ -1,4 +1,4 @@
-export type ProjectArtwork = "web" | "editorial" | "dashboard" | "mobile";
+export type ProjectArtwork = "web" | "editorial" | "dashboard" | "mobile" | "egg-sorter";
 
 export type Project = {
   id: string;

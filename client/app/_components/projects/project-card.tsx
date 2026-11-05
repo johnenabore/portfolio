@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import type { Project } from "@/data/projects";
 import { ProjectPlaceholder } from "./project-placeholder";
+import { ProjectLink } from "./project-transition";
 
 export function ProjectImage({ project, sizes }: { project: Project; sizes: string }) {
   const { image, artwork } = project;
@@ -23,7 +24,7 @@ export function ProjectCard({
 }) {
   const { title, subtitle, href, category = "real", tags, description } = project;
   const arrow = (
-    <span className="absolute top-1/2 left-1/2 grid size-13 -translate-1/2 place-items-center rounded-full bg-background text-foreground opacity-0 shadow-md group-hover/cover:opacity-100 group-focus-within/cover:opacity-100 group-focus-visible/card:opacity-100 motion-safe:transition-opacity [@media(hover:none)]:opacity-100" aria-hidden="true">
+    <span className="absolute top-1/2 left-1/2 grid size-13 -translate-1/2 place-items-center rounded-full bg-background text-foreground opacity-0 shadow-md group-hover/cover:opacity-100 group-focus-within/cover:opacity-100 group-focus-visible/card:opacity-100 site-motion:transition-opacity [@media(hover:none)]:opacity-100" aria-hidden="true">
       <svg viewBox="0 0 16 16" className="size-5" fill="none" stroke="currentColor" strokeWidth="1.25">
         <path d="M3.5 12.5 12 4m-7 0h7v7" />
       </svg>
@@ -32,7 +33,7 @@ export function ProjectCard({
   const content = (
     <>
       <div className="group/cover relative aspect-[47/33.5] overflow-hidden">
-        <div className="absolute inset-0 motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover/cover:scale-[1.025]">
+        <div className="absolute inset-0 site-motion:transition-transform site-motion:duration-500 site-motion:group-hover/cover:scale-[1.025]">
           <ProjectImage project={project} sizes="(max-width: 639px) 90vw, 38vw" />
         </div>
         <Badge className="pointer-events-none absolute top-3 left-3 border-border bg-background px-2.5 py-1 text-[.65rem] font-medium text-foreground uppercase">
@@ -71,13 +72,13 @@ export function ProjectCard({
 
   return (
     <li
-      className="border-4 border-white bg-accent shadow-[0_0_0_1px_#1616160d,0_10px_50px_#1717171c] motion-safe:group-data-[reveal=waiting]/projects:opacity-0 motion-safe:group-data-[reveal=visible]/projects:animate-project-card"
+      className="border-4 border-white bg-accent shadow-[0_0_0_1px_#1616160d,0_10px_50px_#1717171c] site-motion:group-data-[reveal=waiting]/projects:opacity-0 site-motion:group-data-[reveal=visible]/projects:animate-project-card"
       style={{ animationDelay: `${880 + Math.min(index, 3) * 120}ms` }}
     >
       {href ? (
-        <a href={href} className="group/card block h-full focus-visible:outline-2 focus-visible:outline-ring">
+        <ProjectLink href={href} projectTitle={title} className="group/card block h-full focus-visible:outline-2 focus-visible:outline-ring">
           {content}
-        </a>
+        </ProjectLink>
       ) : (
         <article className="group/card">{content}</article>
       )}

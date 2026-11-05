@@ -4,7 +4,7 @@ import { projects } from "@/data/projects";
 export const heroContent = {
   name: { first: "John", last: "Enabore" },
   role: "Aspiring Full Stack Developer",
-  introduction: "I love building application that has a purpose",
+  introduction: "Computer Science student based in Laguna, Philippines.",
   availability: "Available for hire and collaboration",
   portraitSrc: "/hero-portrait.webp",
   collaborateLabel: "Let's collaborate",
@@ -16,9 +16,8 @@ export const heroNavigation: readonly { label: string; count?: string; href?: st
     count: String(projects.length).padStart(2, "0"),
     href: "#projects",
   },
-  { label: "Service" },
-  { label: "Experience" },
-  { label: "Contact", href: portfolioLinks.collaborate },
+  { label: "About", href: "#about" },
+  { label: "Contact", href: portfolioLinks.contact },
 ];
 
 export const heroSocials = [

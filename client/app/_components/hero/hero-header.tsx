@@ -4,7 +4,7 @@ import { HeroMenu } from "./hero-menu";
 
 export function HeroHeader() {
   return (
-    <header className="absolute inset-x-[4.7%] top-[3.7%] z-2 flex items-center justify-between gap-4 text-hero-ui [--hero-slide-from:-1.25rem] motion-safe:animate-hero-header compact:relative compact:inset-auto compact:flex-wrap">
+    <header className="absolute inset-x-[4.7%] top-[3.7%] z-2 flex items-center justify-between gap-4 text-hero-ui [--hero-slide-from:-1.25rem] site-motion:animate-hero-header compact:relative compact:inset-auto compact:flex-wrap">
       <Badge
         variant="outline"
         className="shrink gap-[.55em] rounded-[999px] px-[.72em] py-[.52em] text-[length:inherit] leading-[inherit] font-normal shadow-[0_1rem_2rem_#00000013,0_.2rem_.5rem_#00000009]"

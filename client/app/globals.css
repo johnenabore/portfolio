@@ -21,6 +21,7 @@
   --color-border: var(--border);
   --color-ring: var(--ring);
   --text-hero-ui: var(--hero-ui-size);
+  --animate-section-reveal: hero-slide-in .54s var(--ease-hero-intro) var(--section-enter-delay, 0s) both;
 }
 
 @theme {
@@ -35,6 +36,28 @@
   --animate-project-heading: project-rise-in .65s var(--ease-hero-intro) .12s both;
   --animate-project-toolbar: project-rise-in .55s var(--ease-hero-intro) .48s both;
   --animate-project-card: project-drop-in .76s var(--ease-hero-intro) both;
+  --animate-vinyl-spin: vinyl-spin 14s linear infinite;
+  --animate-case-title: hero-slide-in .72s var(--ease-hero-intro) .07s both;
+  --animate-case-details: project-rise-in .62s var(--ease-hero-intro) .22s both;
+  --animate-case-meta: project-rise-in .58s var(--ease-hero-intro) .36s both;
+  --animate-case-art: case-art-in .82s var(--ease-hero-intro) .13s both;
+
+  @keyframes case-art-in {
+    from {
+      opacity: 0;
+      transform: translateY(1rem) scale(.975);
+      clip-path: inset(14% 0 0 0 round 1rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      clip-path: inset(0 round 1rem);
+    }
+  }
+
+  @keyframes vinyl-spin {
+    to { transform: rotate(1turn); }
+  }
 
   @keyframes hero-slide-in {
     from {
@@ -83,6 +106,13 @@
 
 @custom-variant compact (@media (max-width: 840px));
 @custom-variant fine-pointer (@media (hover: hover) and (pointer: fine));
+@custom-variant site-motion {
+  @media (prefers-reduced-motion: no-preference) {
+    &:where(:root:not([data-reduce-motion]), :root:not([data-reduce-motion]) *) {
+      @slot;
+    }
+  }
+}
 
 @utility portrait-reveal-mask {
   mask-image: radial-gradient(
@@ -105,4 +135,41 @@ body {
   background: #f5f5f5;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+html:has([data-portfolio-menu][data-scroll-lock]) {
+  overflow: hidden;
+}
+
+html:has([data-portfolio-menu][data-scroll-lock]) body {
+  padding-inline-end: var(--menu-scrollbar-width, 0px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-reduce-motion]) [data-portfolio-menu] {
+    --menu-origin: var(--menu-origin-x, 95%) var(--menu-origin-y, 5%);
+    --menu-closed-radius: calc(var(--menu-trigger-size, 44px) / 2 + 4px);
+    clip-path: circle(var(--menu-closed-radius) at var(--menu-origin));
+    transition: clip-path .44s cubic-bezier(.45, 0, .25, 1), display .44s allow-discrete, overlay .44s allow-discrete;
+  }
+
+  :root:not([data-reduce-motion]) [data-portfolio-menu][open] {
+    clip-path: circle(var(--menu-radius, 142vmax) at var(--menu-origin));
+    transition-duration: .64s;
+    transition-timing-function: cubic-bezier(.32, 0, .23, 1);
+  }
+
+  @starting-style {
+    :root:not([data-reduce-motion]) [data-portfolio-menu][open] {
+      clip-path: circle(var(--menu-closed-radius) at var(--menu-origin));
+    }
+  }
+}
+
+html[data-project-transition] [data-project-entry] {
+  animation-play-state: paused;
+}
+
+html:has([data-project-curtain][data-active]) {
+  overflow-anchor: none;
 }

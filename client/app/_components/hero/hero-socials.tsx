@@ -42,7 +42,7 @@ export function HeroSocials() {
         return (
           <li
             key={id}
-            className="motion-safe:animate-hero-social"
+            className="site-motion:animate-hero-social"
             style={{ animationDelay: `${700 + index * 80}ms` }}
           >
             <Button

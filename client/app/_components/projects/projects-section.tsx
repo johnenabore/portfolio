@@ -1,15 +1,10 @@
-import localFont from "next/font/local";
+import { sectionFont } from "@/app/fonts";
 import { projects, type Project } from "@/data/projects";
+import { smartEggSorter } from "@/data/smart-egg-sorter";
 import { ProjectsShowcase } from "./projects-showcase";
 
-const inter = localFont({
-  src: "../../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2",
-  weight: "100 900",
-  display: "swap",
-  preload: false,
-});
-
 const previews = [
+  smartEggSorter,
   {
     id: "preview-web-app",
     title: "Project 01 — Full Stack Web App",
@@ -45,5 +40,12 @@ const previews = [
 ] satisfies readonly Project[];
 
 export function ProjectsSection() {
-  return <ProjectsShowcase className={inter.className} projects={projects.length ? projects : previews} />;
+  return (
+    <ProjectsShowcase
+      className={sectionFont.className}
+      projects={projects.length ? projects : previews}
+      featured={projects[0] ?? smartEggSorter}
+      featuredPlaceholder={!projects.length}
+    />
+  );
 }

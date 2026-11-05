@@ -44,7 +44,7 @@ export function HeroCta({ label, href, variant = "default" }: HeroCtaProps) {
       disabled={!href}
     >
       {href ? (
-        <a href={href} target={isResume ? "_blank" : undefined} rel={isResume ? "noreferrer" : undefined}>{content}</a>
+        <a href={href}>{content}</a>
       ) : content}
     </Button>
   );
