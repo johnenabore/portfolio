@@ -44,8 +44,6 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
       document.querySelector<HTMLElement>("main h1")?.focus({ preventScroll: true });
       window.scrollTo({ top: 0, behavior: "instant" });
     }
-    document.documentElement.removeAttribute("data-project-transition");
-
     const opening = element.animate(
       openingClip,
       { duration: sweepDuration, easing, fill: "forwards" },
@@ -56,6 +54,7 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
     void opening.finished.then(() => {
       if (active.current !== run) return;
       element.removeAttribute("data-active");
+      document.documentElement.removeAttribute("data-project-transition");
       opening.cancel();
       active.current = null;
     }).catch(() => {});

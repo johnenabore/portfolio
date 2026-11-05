@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { EggSorterPlaceholder } from "@/app/_components/projects/egg-sorter-placeholder";
 import { ProjectScreenshots } from "@/app/_components/projects/project-screenshots";
+import { ProjectWalkthrough } from "@/app/_components/projects/project-walkthrough";
 import { sectionFont } from "@/app/fonts";
 import { Badge } from "@/components/ui/badge";
 import { smartEggSorter, smartEggSorterClips } from "@/data/smart-egg-sorter";
@@ -111,13 +112,17 @@ export default function SmartEggSorterPage() {
 
               <section id="walkthrough" tabIndex={-1} className="scroll-mt-8">
                 <h2 className="mb-4 text-3xl font-semibold tracking-[-.045em] sm:text-4xl">Walkthrough</h2>
-                <figure className="grid aspect-video place-content-center justify-items-center gap-3 rounded-2xl border border-white/15 bg-primary p-4 text-center text-primary-foreground">
-                  <svg aria-hidden="true" viewBox="0 0 24 24" className="size-9 text-[#b9d7aa]" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="4" width="18" height="16" rx="2" />
-                    <path d="m10 8 6 4-6 4z" />
-                  </svg>
-                  <figcaption className="text-sm text-white/80">Walkthrough video placeholder</figcaption>
-                </figure>
+                <ProjectWalkthrough
+                  title={smartEggSorter.title}
+                  landscape={{
+                    src: "/projects/smart-egg-sorter/walkthrough-landscape.mp4",
+                    poster: "/projects/smart-egg-sorter/walkthrough-landscape.webp",
+                  }}
+                  portrait={{
+                    src: "/projects/smart-egg-sorter/walkthrough-portrait.mp4",
+                    poster: "/projects/smart-egg-sorter/walkthrough-portrait.webp",
+                  }}
+                />
                 <ol className="mt-5 divide-y divide-border border-y border-border">
                   {steps.map(({ title, description }, index) => (
                     <li key={title} className="grid grid-cols-[2rem_1fr] gap-2 py-4">
@@ -139,7 +144,7 @@ export default function SmartEggSorterPage() {
 
               <section id="technical-notes" tabIndex={-1} className="scroll-mt-8">
                 <h2 className="mb-5 text-3xl font-semibold tracking-[-.045em] sm:text-4xl">Technical notes</h2>
-                <div className="space-y-5 border-y border-border py-5">
+                <div data-case-group className="space-y-5 border-y border-border py-5">
                   <div>
                     <h3 className="font-semibold">Offline-first classification</h3>
                     <p className="mt-1 max-w-[65ch] text-sm leading-relaxed text-[#484848]">The app runs species classification on the device, so that step can work without internet access.</p>
@@ -157,7 +162,7 @@ export default function SmartEggSorterPage() {
               <section id="outcome" tabIndex={-1} className="scroll-mt-8">
                 <h2 className="mb-4 text-3xl font-semibold tracking-[-.045em] sm:text-4xl">Outcome</h2>
                 <p className="max-w-[65ch] leading-relaxed text-[#484848]">
-                  The prototype brings device pairing, live sensor events, and on-device species classification into one app. The walkthrough will show how those parts work together in the field workflow.
+                  The prototype brings device pairing, live sensor events, and on-device species classification into one app. The walkthrough shows how those parts work together in the field workflow.
                 </p>
               </section>
             </div>

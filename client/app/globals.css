@@ -194,3 +194,14 @@ html:has([data-screenshot-viewer][open]) {
 html:has([data-screenshot-viewer][open]) body {
   padding-inline-end: var(--screenshot-scrollbar-width, 0px);
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-reduce-motion]) [data-case-reveal="waiting"] {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+
+  :root:not([data-reduce-motion]) [data-case-reveal="visible"] {
+    animation: project-rise-in .58s var(--ease-hero-intro) var(--case-reveal-delay, 0ms) both;
+  }
+}
