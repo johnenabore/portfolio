@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className="antialiased site-motion:scroll-smooth site-motion:[@media(pointer:coarse)]:snap-y site-motion:[@media(pointer:coarse)]:snap-mandatory">
+    <html lang="en" className="antialiased site-motion:scroll-smooth">
       <body>
         <UiClickSound />
         <ProjectTransitionProvider>{children}</ProjectTransitionProvider>
