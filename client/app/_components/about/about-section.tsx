@@ -41,7 +41,7 @@ export function AboutSection() {
             </dl>
           </div>
         </div>
-        <div className={cn("min-w-0 md:mt-[clamp(1.75rem,4vw,4rem)] [--section-enter-delay:1.02s] [--hero-slide-from:1.75rem]", reveal)}>
+        <div className={cn("min-w-0 [--section-enter-delay:1.02s] [--hero-slide-from:1.75rem]", reveal)}>
           <NowPlaying />
         </div>
       </div>

@@ -17,6 +17,7 @@ export const heroNavigation: readonly { label: string; count?: string; href?: st
     href: "#projects",
   },
   { label: "About", href: "#about" },
+  { label: "Services", href: "#services" },
   { label: "Contact", href: portfolioLinks.contact },
 ];
 

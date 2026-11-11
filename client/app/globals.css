@@ -12,6 +12,7 @@
 }
 
 @theme inline {
+  --animate-service-row: service-row-in .62s var(--ease-hero-intro) var(--service-row-delay, 0s) both;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
@@ -34,8 +35,6 @@
   --animate-hero-social: hero-slide-in .48s var(--ease-hero-intro) both;
   --animate-hero-cta: hero-cta-in .45s var(--ease-hero-intro) .64s both;
   --animate-project-heading: project-rise-in .65s var(--ease-hero-intro) .12s both;
-  --animate-project-toolbar: project-rise-in .55s var(--ease-hero-intro) .48s both;
-  --animate-project-card: project-drop-in .76s var(--ease-hero-intro) both;
   --animate-vinyl-spin: vinyl-spin 14s linear infinite;
   --animate-case-title: hero-slide-in .72s var(--ease-hero-intro) .07s both;
   --animate-case-details: project-rise-in .62s var(--ease-hero-intro) .22s both;
@@ -52,6 +51,17 @@
       opacity: 1;
       transform: translateY(0) scale(1);
       clip-path: inset(0 round 1rem);
+    }
+  }
+
+  @keyframes service-row-in {
+    from {
+      opacity: 0;
+      transform: translateX(-2.75rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
     }
   }
 
@@ -85,17 +95,6 @@
     from {
       opacity: 0;
       transform: translateY(1.25rem);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes project-drop-in {
-    from {
-      opacity: 0;
-      transform: translateY(-5rem);
     }
     to {
       opacity: 1;

@@ -5,6 +5,7 @@ import { Hero } from "./_components/hero/hero";
 import { ProjectsSection } from "./_components/projects/projects-section";
 import { SectionRail } from "./_components/section-rail";
 import { SectionScroll } from "./_components/section-scroll";
+import { ServicesSection } from "./_components/services/services-section";
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
       <Hero />
       <ProjectsSection />
       <AboutSection />
+      <ServicesSection />
       <ContactSection />
     </main>
   );

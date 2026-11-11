@@ -5,7 +5,8 @@ import { ProjectScreenshots } from "@/app/_components/projects/project-screensho
 import { ProjectWalkthrough } from "@/app/_components/projects/project-walkthrough";
 import { sectionFont } from "@/app/fonts";
 import { Badge } from "@/components/ui/badge";
-import { smartEggSorter, smartEggSorterClips } from "@/data/smart-egg-sorter";
+import { smartEggSorter } from "@/data/projects";
+import { smartEggSorterClips } from "@/data/smart-egg-sorter";
 
 const title = "Smart Egg Sorter | John Enabore";
 const description = smartEggSorter.description;

@@ -8,6 +8,7 @@ const wheelIdle = 150;
 const snapDuration = 520;
 const glideTimeConstant = 68;
 const touchSettleDelay = 120;
+const touchSnapDistance = 24;
 
 type Transition = {
   frame: number;
@@ -24,8 +25,8 @@ type Glide = {
   edgeDelta?: number;
 };
 
-type SectionBounds = { start: number; end: number; next?: number; previous?: number };
-type TouchGesture = { x: number; y: number; top: number; bounds: SectionBounds; target?: number };
+type TouchGesture = { x: number; y: number; top: number; section: HTMLElement; target?: HTMLElement };
+type TouchRelease = Pick<TouchGesture, "top" | "section"> & { distance: number };
 
 export function SectionScroll() {
   useEffect(() => {
@@ -40,7 +41,7 @@ export function SectionScroll() {
     let glide: Glide | undefined;
     let freeScrollTop: number | undefined;
     let touch: TouchGesture | undefined;
-    let settlingTouch: TouchGesture | undefined;
+    let settlingTouch: TouchRelease | undefined;
     let touchTimer: number | undefined;
 
     function motionEnabled() {
@@ -66,17 +67,17 @@ export function SectionScroll() {
       window.scrollTo({ top, behavior: "instant" });
     }
 
-    function glideTo(target: number, now: number) {
+    function glideTo(target: number, now: number, edgeDelta?: number) {
       freeScrollTop = target;
       if (glide) {
         glide.target = target;
-        glide.edgeDelta = undefined;
+        glide.edgeDelta = edgeDelta;
         return;
       }
 
       const position = window.scrollY;
       if (Math.abs(target - position) < 0.5) return;
-      const active: Glide = { frame: 0, position, target, lastFrameAt: now };
+      const active: Glide = { frame: 0, position, target, lastFrameAt: now, edgeDelta };
       glide = active;
 
       function animate(time: number) {
@@ -104,9 +105,8 @@ export function SectionScroll() {
       active.frame = requestAnimationFrame(animate);
     }
 
-    function snapTo(target: number, direction: number, now: number) {
+    function snapTo(target: HTMLElement | number, direction: number, now: number) {
       const from = window.scrollY;
-      const top = Math.min(target, root.scrollHeight - root.clientHeight);
       const active: Transition = { frame: 0, direction, lastWheelAt: now };
       stopGlide();
       root.setAttribute("data-section-snapping", "");
@@ -120,6 +120,8 @@ export function SectionScroll() {
 
         const progress = Math.max(0, Math.min(1, (time - now) / snapDuration));
         const eased = progress * progress * (3 - 2 * progress);
+        const destination = typeof target === "number" ? target : sectionTop(target);
+        const top = Math.min(destination, root.scrollHeight - root.clientHeight);
         scrollTo(from + (top - from) * eased);
 
         if (progress < 1) {
@@ -136,13 +138,21 @@ export function SectionScroll() {
       active.frame = requestAnimationFrame(animate);
     }
 
-    function sectionBounds(top: number): SectionBounds {
-      const starts = sections.map((section) => section.getBoundingClientRect().top + window.scrollY);
-      const index = Math.max(0, starts.findLastIndex((start) => start <= top + edgeTolerance));
-      const start = starts[index];
-      const next = starts[index + 1];
-      const end = Math.max(start, (next ?? root.scrollHeight) - root.clientHeight);
-      return { start, end, next, previous: starts[index - 1] };
+    function sectionTop(section: HTMLElement) {
+      return section.getBoundingClientRect().top + window.scrollY;
+    }
+
+    function sectionAt(top: number) {
+      return sections.findLast((section) => sectionTop(section) <= top + edgeTolerance) ?? sections[0];
+    }
+
+    function sectionBounds(section: HTMLElement) {
+      const index = sections.indexOf(section);
+      const start = sectionTop(section);
+      const next = sections[index + 1];
+      const bottom = next ? sectionTop(next) : root.scrollHeight;
+      const end = Math.max(start, bottom - root.clientHeight);
+      return { start, end, next, previous: sections[index - 1] };
     }
 
     function inDialog(target: EventTarget | null) {
@@ -165,12 +175,12 @@ export function SectionScroll() {
       landing = undefined;
 
       const top = window.scrollY;
-      const { start, end, next, previous } = sectionBounds(top);
+      const { start, end, next, previous } = sectionBounds(sectionAt(top));
       const target = direction > 0 ? next : previous;
 
       // Recover when an external scroll stops in the transition space.
       if (top > end + edgeTolerance) {
-        const nearNext = next !== undefined && next - top <= snapApproach;
+        const nearNext = next !== undefined && sectionTop(next) - top <= snapApproach;
         const recovery = direction > 0 ? next ?? end : nearNext ? start : end;
         snapTo(recovery, direction, now);
         return;
@@ -178,19 +188,16 @@ export function SectionScroll() {
 
       const edge = direction > 0 ? end : start;
       const from = glide?.target ?? (freeScrollTop !== undefined && Math.abs(freeScrollTop - top) < 1 ? freeScrollTop : top);
-      const atEdge = Math.abs(edge - from) <= edgeTolerance;
-      const nearEdge = !glide && Math.abs(edge - top) <= snapApproach;
-      if ((atEdge || nearEdge) && target !== undefined) {
-        if (glide && Math.abs(edge - top) > edgeTolerance) {
-          // Let the gallery reach its edge before handing off to the next section.
-          glide.edgeDelta = delta;
-        } else {
-          snapTo(target, direction, now);
-        }
+      if (target && Math.abs(edge - top) <= edgeTolerance) {
+        snapTo(target, direction, now);
         return;
       }
 
-      glideTo(Math.max(start, Math.min(end, from + delta)), now);
+      const intendedTop = from + delta;
+      const clampedTop = Math.max(start, Math.min(end, intendedTop));
+      // Carry wheel movement past an edge into the snap once free scrolling reaches it.
+      const edgeDelta = target && Math.abs(intendedTop - clampedTop) > edgeTolerance ? delta : undefined;
+      glideTo(clampedTop, now, edgeDelta);
     }
 
     function handleWheel(event: WheelEvent) {
@@ -209,6 +216,7 @@ export function SectionScroll() {
       // Claim the first vertical wheel event so native momentum cannot interrupt a later snap.
       event.preventDefault();
       const unit = deltaMode === WheelEvent.DOM_DELTA_PAGE ? root.clientHeight : deltaMode === WheelEvent.DOM_DELTA_LINE ? 16 : 1;
+      cancelTouchSettle();
       move(deltaY * unit, performance.now());
     }
 
@@ -217,23 +225,32 @@ export function SectionScroll() {
       settlingTouch = undefined;
     }
 
-    function scheduleTouchSettle() {
-      if (!settlingTouch) return;
+    function settleTouch() {
+      const gesture = settlingTouch;
+      if (!gesture) return;
+      if (!motionEnabled()) {
+        cancelTouchSettle();
+        return;
+      }
+
+      const top = window.scrollY;
+      const { start, end, next, previous } = sectionBounds(gesture.section);
+      const direction = Math.sign(gesture.distance);
+      const edge = direction > 0 ? end : start;
+      const target = direction > 0 ? next : previous;
+      const travelPastEdge = direction * (top - edge);
+      const swipedPastEdge = direction * (gesture.top + gesture.distance - edge) >= touchSnapDistance;
+
+      // Hand off as soon as native scrolling reaches an edge the swipe crosses.
+      if (target && travelPastEdge >= -edgeTolerance && (travelPastEdge > edgeTolerance || swipedPastEdge)) {
+        const targetTop = Math.min(sectionTop(target), root.scrollHeight - root.clientHeight);
+        cancelTouchSettle();
+        if (direction * (targetTop - top) > edgeTolerance) snapTo(target, direction, performance.now());
+        return;
+      }
 
       window.clearTimeout(touchTimer);
-      touchTimer = window.setTimeout(() => {
-        const gesture = settlingTouch;
-        settlingTouch = undefined;
-        if (!gesture || !motionEnabled()) return;
-
-        const top = window.scrollY;
-        const { start, end, next, previous } = gesture.bounds;
-        // Let native momentum finish. Only take over if it passed a section edge.
-        const target = top > end + edgeTolerance && top > gesture.top
-          ? next
-          : top < start - edgeTolerance && top < gesture.top ? previous : undefined;
-        if (target !== undefined) window.scrollTo({ top: target, behavior: "smooth" });
-      }, touchSettleDelay);
+      touchTimer = window.setTimeout(cancelTouchSettle, touchSettleDelay);
     }
 
     function startTouch(event: TouchEvent) {
@@ -243,8 +260,7 @@ export function SectionScroll() {
 
       const { clientX, clientY } = event.touches[0];
       const top = window.scrollY;
-      const bounds = sectionBounds(top);
-      touch = { x: clientX, y: clientY, top, bounds };
+      touch = { x: clientX, y: clientY, top, section: sectionAt(top) };
     }
 
     function moveTouch(event: TouchEvent) {
@@ -255,14 +271,14 @@ export function SectionScroll() {
       touch.target = undefined;
       if (Math.abs(distance) <= Math.abs(touch.x - clientX)) return;
 
-      const { start, end, next, previous } = touch.bounds;
+      const { start, end, next, previous } = sectionBounds(touch.section);
       const target = distance > 0
         ? (touch.top >= end - snapApproach ? next : undefined)
         : (touch.top <= start + snapApproach ? previous : undefined);
       if (target === undefined) return;
 
       event.preventDefault();
-      if (Math.abs(distance) >= 24) touch.target = target;
+      if (Math.abs(distance) >= touchSnapDistance) touch.target = target;
     }
 
     function endTouch(event: TouchEvent) {
@@ -270,23 +286,23 @@ export function SectionScroll() {
       touch = undefined;
       if (event.type !== "touchend" || !gesture || !motionEnabled()) return;
 
-      if (gesture.target !== undefined) {
-        snapTo(gesture.target, Math.sign(gesture.target - window.scrollY), performance.now());
+      const end = event.changedTouches[0];
+      if (!end) return;
+      const distance = gesture.y - end.clientY;
+      if (gesture.target) {
+        snapTo(gesture.target, Math.sign(distance), performance.now());
         return;
       }
-
-      if (nativeTouch.matches) return;
-      const end = event.changedTouches[0];
-      if (!end || Math.abs(gesture.y - end.clientY) < Math.max(12, Math.abs(gesture.x - end.clientX))) return;
-      settlingTouch = gesture;
-      scheduleTouchSettle();
+      if (Math.abs(distance) < Math.max(12, Math.abs(gesture.x - end.clientX))) return;
+      settlingTouch = { top: gesture.top, section: gesture.section, distance };
+      settleTouch();
     }
 
     window.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("touchstart", startTouch, { passive: true });
     // Register before the gesture so Safari can cancel an edge swipe from its first move.
     window.addEventListener("touchmove", moveTouch, { passive: false });
-    window.addEventListener("scroll", scheduleTouchSettle, { passive: true });
+    window.addEventListener("scroll", settleTouch, { passive: true });
     window.addEventListener("touchend", endTouch);
     window.addEventListener("touchcancel", endTouch);
     window.addEventListener("pointerdown", resetScroll, { passive: true });
@@ -297,7 +313,7 @@ export function SectionScroll() {
       window.removeEventListener("touchstart", startTouch);
       window.removeEventListener("touchmove", moveTouch);
       window.removeEventListener("touchend", endTouch);
-      window.removeEventListener("scroll", scheduleTouchSettle);
+      window.removeEventListener("scroll", settleTouch);
       window.removeEventListener("touchcancel", endTouch);
       window.removeEventListener("pointerdown", resetScroll);
       window.removeEventListener("keydown", resetScroll);
