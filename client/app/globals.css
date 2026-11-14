@@ -13,6 +13,7 @@
 
 @theme inline {
   --animate-service-row: service-row-in .62s var(--ease-hero-intro) var(--service-row-delay, 0s) both;
+  --animate-project-row: project-rise-in .58s var(--ease-hero-intro) var(--project-row-delay, 0ms) both;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
@@ -35,6 +36,7 @@
   --animate-hero-social: hero-slide-in .48s var(--ease-hero-intro) both;
   --animate-hero-cta: hero-cta-in .45s var(--ease-hero-intro) .64s both;
   --animate-project-heading: project-rise-in .65s var(--ease-hero-intro) .12s both;
+  --animate-project-image: project-image-in .9s var(--ease-hero-intro) .14s both;
   --animate-vinyl-spin: vinyl-spin 14s linear infinite;
   --animate-case-title: hero-slide-in .72s var(--ease-hero-intro) .07s both;
   --animate-case-details: project-rise-in .62s var(--ease-hero-intro) .22s both;
@@ -88,6 +90,17 @@
     to {
       opacity: 1;
       transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes project-image-in {
+    from {
+      opacity: 1;
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      opacity: 1;
+      clip-path: inset(0);
     }
   }
 

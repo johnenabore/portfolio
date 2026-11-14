@@ -83,7 +83,7 @@ export default function SmartEggSorterPage() {
           </header>
 
           <div data-project-entry className="mt-10 grid gap-3 border-y border-border py-4 text-sm site-motion:animate-case-meta sm:grid-cols-3 sm:gap-5">
-            <p><span className="mr-2 text-ring">Role</span> Web app and device integration</p>
+            <p><span className="mr-2 text-ring">Role</span> {smartEggSorter.contribution}</p>
             <p><span className="mr-2 text-ring">Live demo</span> Link pending</p>
             <p><span className="mr-2 text-ring">Source code</span> Link pending</p>
           </div>
@@ -163,7 +163,7 @@ export default function SmartEggSorterPage() {
               <section id="outcome" tabIndex={-1} className="scroll-mt-8">
                 <h2 className="mb-4 text-3xl font-semibold tracking-[-.045em] sm:text-4xl">Outcome</h2>
                 <p className="max-w-[65ch] leading-relaxed text-[#484848]">
-                  The prototype brings device pairing, live sensor events, and on-device species classification into one app. The walkthrough shows how those parts work together in the field workflow.
+                  The prototype brings device pairing, live sensor events, and on-device species classification into one app. The EfficientNetB0 model reached {smartEggSorter.duckTestAccuracy} accuracy on the duck egg test set.
                 </p>
               </section>
             </div>
