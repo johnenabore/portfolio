@@ -25,7 +25,8 @@ export function HeroScroll() {
       if (!frame) frame = window.requestAnimationFrame(update);
     }
 
-    update();
+    // First read on the next frame, after layout, instead of forcing layout during hydration.
+    schedule();
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
     return () => {

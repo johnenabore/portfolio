@@ -40,7 +40,8 @@ export function Journey() {
 
     const drawn = () => "drawn" in list.dataset;
     const motion = motionAllowed() && "IntersectionObserver" in window;
-    place(motion ? 0 : current, false);
+    // No measuring on mount: the ResizeObserver below places the train once the list has been laid out,
+    // so reading positions never forces layout of this below-the-fold section early.
     if (!motion) list.dataset.drawn = "";
 
     const observer = new IntersectionObserver(([entry]) => {
@@ -121,7 +122,7 @@ export function Journey() {
                   style={at(isNext ? arrive + 300 : reached)}
                 />
                 {isCurrent && (
-                  <span aria-hidden="true" className="absolute size-7 rounded-full site-motion:group-data-drawn/journey:animate-live-pulse" style={{ animationDelay: `${arrive}ms` }} />
+                  <span aria-hidden="true" className="absolute size-7 rounded-full bg-[#21be65] opacity-0 site-motion:group-data-drawn/journey:animate-live-pulse" style={{ animationDelay: `${arrive}ms` }} />
                 )}
               </span>
 

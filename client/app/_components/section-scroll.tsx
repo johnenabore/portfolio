@@ -34,6 +34,17 @@ export function SectionScroll() {
     if (sections.length < 2) return;
 
     const root = document.documentElement;
+    // Turns on native touch snapping in CSS (a plain attribute instead of html:has(…)).
+    root.setAttribute("data-scroll-sections", "");
+
+    // Before any jump to a section, lay out every section at its real height (see [data-deferred-section]).
+    // Capture phase, so this runs before the link's own handler, including the menu's.
+    function prepareJump(event: Event) {
+      const link = event.target instanceof Element ? event.target.closest('a[href^="#"]') : null;
+      if (event.type === "hashchange" || link) root.setAttribute("data-sections-ready", "");
+    }
+    document.addEventListener("click", prepareJump, true);
+    window.addEventListener("hashchange", prepareJump);
     const motion = window.matchMedia("(prefers-reduced-motion: no-preference)");
     const nativeTouch = window.matchMedia("(hover: none) and (pointer: coarse)");
     let transition: Transition | undefined;
@@ -309,6 +320,9 @@ export function SectionScroll() {
     window.addEventListener("keydown", resetScroll);
     return () => {
       resetScroll();
+      root.removeAttribute("data-scroll-sections");
+      document.removeEventListener("click", prepareJump, true);
+      window.removeEventListener("hashchange", prepareJump);
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("touchstart", startTouch);
       window.removeEventListener("touchmove", moveTouch);

@@ -88,9 +88,10 @@
     100% { translate: 0 0; scale: 1; }
   }
 
+  /* A green ring that grows and fades. Scale and opacity run on the compositor, unlike box-shadow. */
   @keyframes live-pulse {
-    0% { box-shadow: 0 0 0 0 #21be6573; }
-    70%, 100% { box-shadow: 0 0 0 .55em #21be6500; }
+    0% { scale: .6; opacity: .55; }
+    70%, 100% { scale: 1.9; opacity: 0; }
   }
 
   @keyframes intro-letter {
@@ -249,28 +250,52 @@ body {
 
 /* Native snapping keeps touch momentum within each section, including tall sections. */
 @media (hover: none) and (pointer: coarse) and (prefers-reduced-motion: no-preference) {
-  html:not([data-reduce-motion]):not([data-section-snapping]):has(main > [data-scroll-section]) {
+  html[data-scroll-sections]:not([data-reduce-motion]):not([data-section-snapping]) {
     scroll-snap-type: y mandatory;
   }
 }
 
-html:has([data-development-intro][open]) {
+/* Homepage sections below the hero skip layout and paint until they come near the screen, which keeps the
+   first load light. Until then each counts as one screen tall. Jumping to a section (a # link, a hash in the
+   URL) sets data-sections-ready first, so every section is laid out at its real height and the jump lands. */
+html:not([data-sections-ready]) [data-deferred-section] {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100svh;
+}
+
+/* data-intro-open is set on <html> by the inline head script, before first paint, while the intro shows.
+   A plain attribute is cheap; html:has(…) made the browser re-check the whole page on every DOM change,
+   such as each tick of the counter. The stable gutter keeps the page from shifting when scrolling returns. */
+html[data-intro-open] {
   overflow: hidden;
+  scrollbar-gutter: stable;
 }
 
-html:has([data-development-intro][open]) body {
-  padding-inline-end: var(--intro-scrollbar-width, 0px);
+/* Fixed elements can't cover the reserved scrollbar gutter, so give it the intro's colour until the exit starts. */
+html[data-intro-open]:not([data-intro-exiting]) {
+  background-color: #171917;
 }
 
-html:has([data-development-intro][open]) #home * {
+/* Paint the intro before hydration; it becomes a modal dialog once the page is interactive. */
+html[data-intro-open] [data-development-intro]:not([open]) {
+  display: block;
+  z-index: 200;
+}
+
+html:not([data-intro-open]) [data-development-intro] {
+  display: none;
+}
+
+html[data-intro-open] #home * {
   animation-play-state: paused;
 }
 
-html:has([data-portfolio-menu][data-scroll-lock]) {
+/* Overlays set a plain attribute on <html> while open, for the same reason as data-intro-open. */
+html[data-menu-open] {
   overflow: hidden;
 }
 
-html:has([data-portfolio-menu][data-scroll-lock]) body {
+html[data-menu-open] body {
   padding-inline-end: var(--menu-scrollbar-width, 0px);
 }
 
@@ -278,23 +303,23 @@ html[data-project-transition] [data-project-entry] {
   animation-play-state: paused;
 }
 
-html:has([data-project-curtain][data-active]) {
+html[data-project-curtain-active] {
   overflow-anchor: none;
 }
 
-html:has([data-screenshot-viewer][open]) {
+html[data-screenshot-open] {
   overflow: hidden;
 }
 
-html:has([data-screenshot-viewer][open]) body {
+html[data-screenshot-open] body {
   padding-inline-end: var(--screenshot-scrollbar-width, 0px);
 }
 
-html:has([data-certificate-viewer][open]) {
+html[data-certificate-open] {
   overflow: hidden;
 }
 
-html:has([data-certificate-viewer][open]) body {
+html[data-certificate-open] body {
   padding-inline-end: var(--certificate-scrollbar-width, 0px);
 }
 

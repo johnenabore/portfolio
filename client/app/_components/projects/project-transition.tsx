@@ -54,6 +54,7 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
     void opening.finished.then(() => {
       if (active.current !== run) return;
       element.removeAttribute("data-active");
+      document.documentElement.removeAttribute("data-project-curtain-active");
       document.documentElement.removeAttribute("data-project-transition");
       opening.cancel();
       active.current = null;
@@ -96,6 +97,7 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
 
     setTitle(projectTitle);
     element.setAttribute("data-active", "");
+    root.setAttribute("data-project-curtain-active", "");
     root.setAttribute("data-project-transition", "");
     const closing = element.animate(
       closingClip,

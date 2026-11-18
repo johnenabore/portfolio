@@ -4,8 +4,7 @@ import { useCallback, useEffect, useId, useRef, type CSSProperties } from "react
 import { Button } from "@/components/ui/button";
 import { sectionFont } from "@/app/fonts";
 import { motionAllowed } from "@/lib/motion";
-
-const storageKey = "portfolio-intro-seen";
+import { introSeenKey } from "@/lib/preferences";
 const countDuration = 1100;
 const holdDuration = 1500;
 const words = ["John", "Enabore"];
@@ -24,12 +23,13 @@ export function IntroLoader() {
 
     const finish = () => {
       try {
-        sessionStorage.setItem(storageKey, "true");
+        sessionStorage.setItem(introSeenKey, "true");
       } catch {
         // Browsing remains available when session storage is blocked.
       }
       viewer.close();
-      document.documentElement.style.removeProperty("--intro-scrollbar-width");
+      document.documentElement.removeAttribute("data-intro-open");
+      document.documentElement.removeAttribute("data-intro-exiting");
       document.getElementById(location.hash.slice(1) || "home")?.focus({ preventScroll: true });
     };
 
@@ -39,6 +39,7 @@ export function IntroLoader() {
     }
 
     viewer.setAttribute("data-exiting", "");
+    document.documentElement.setAttribute("data-intro-exiting", "");
     const exit = viewer.animate(
       [{ transform: "translateY(0)" }, { transform: "translateY(-100%)" }],
       { duration: 520, easing: "cubic-bezier(.65, 0, .35, 1)", fill: "forwards" },
@@ -47,19 +48,17 @@ export function IntroLoader() {
   }, []);
 
   useEffect(() => {
-    try {
-      if (sessionStorage.getItem(storageKey)) return;
-    } catch {
-      // Show the intro for this visit when storage is unavailable.
-    }
-    // The intro is purely decorative, so visitors who prefer less motion skip it entirely.
-    if (!motionAllowed()) return;
-
     const viewer = dialog.current;
-    if (!viewer) return;
     const root = document.documentElement;
-    root.style.setProperty("--intro-scrollbar-width", `${window.innerWidth - root.clientWidth}px`);
-    viewer.showModal();
+    // The inline head script already decided whether to show the intro (not seen this session,
+    // motion allowed) and painted it. Here it becomes a modal dialog and starts counting.
+    if (!viewer || !root.hasAttribute("data-intro-open")) return;
+    // The intro is purely decorative, so visitors who prefer less motion skip it entirely.
+    if (!motionAllowed()) {
+      root.removeAttribute("data-intro-open");
+      return;
+    }
+    if (!viewer.open) viewer.showModal();
 
     const start = performance.now();
     let frame = 0;
@@ -85,7 +84,8 @@ export function IntroLoader() {
       if (timer.current) clearTimeout(timer.current);
       document.removeEventListener("visibilitychange", scheduleDismissal);
       viewer.getAnimations().forEach((animation) => animation.cancel());
-      root.style.removeProperty("--intro-scrollbar-width");
+      root.removeAttribute("data-intro-open");
+      root.removeAttribute("data-intro-exiting");
     };
   }, [dismiss]);
 

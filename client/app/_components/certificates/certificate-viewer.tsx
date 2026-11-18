@@ -42,6 +42,7 @@ export function CertificateViewer({ certificates, ref, findCard }: Props) {
       setIndex(next);
       const root = document.documentElement;
       root.style.setProperty("--certificate-scrollbar-width", `${window.innerWidth - root.clientWidth}px`);
+      root.setAttribute("data-certificate-open", "");
       viewer.showModal();
 
       if (!motionAllowed()) return;
@@ -63,6 +64,7 @@ export function CertificateViewer({ certificates, ref, findCard }: Props) {
   }), []);
 
   useEffect(() => () => {
+    document.documentElement.removeAttribute("data-certificate-open");
     document.documentElement.style.removeProperty("--certificate-scrollbar-width");
   }, []);
 
@@ -125,6 +127,7 @@ export function CertificateViewer({ certificates, ref, findCard }: Props) {
       onClose={() => {
         frame.current?.getAnimations().forEach((animation) => animation.cancel());
         details.current?.getAnimations().forEach((animation) => animation.cancel());
+        document.documentElement.removeAttribute("data-certificate-open");
         document.documentElement.style.removeProperty("--certificate-scrollbar-width");
         opener.current?.focus({ preventScroll: true });
       }}

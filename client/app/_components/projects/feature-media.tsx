@@ -14,6 +14,8 @@ export function FeatureMedia({ className, children }: { className?: string; chil
     const element = frame.current;
     if (!element) return;
     let scrollFrame = 0;
+    // Only follow scroll while the image is near the screen, and measure it after the browser has laid it out.
+    let nearScreen = !("IntersectionObserver" in window);
 
     function updateParallax() {
       scrollFrame = 0;
@@ -29,13 +31,21 @@ export function FeatureMedia({ className, children }: { className?: string; chil
     }
 
     function scheduleParallax() {
-      if (!scrollFrame) scrollFrame = requestAnimationFrame(updateParallax);
+      if (nearScreen && !scrollFrame) scrollFrame = requestAnimationFrame(updateParallax);
     }
 
-    updateParallax();
+    const observer = "IntersectionObserver" in window
+      ? new IntersectionObserver(([entry]) => {
+          nearScreen = entry.isIntersecting;
+          scheduleParallax();
+        }, { rootMargin: "25% 0px" })
+      : undefined;
+    observer?.observe(element);
+    scheduleParallax();
     window.addEventListener("scroll", scheduleParallax, { passive: true });
     window.addEventListener("resize", scheduleParallax);
     return () => {
+      observer?.disconnect();
       cancelAnimationFrame(scrollFrame);
       window.removeEventListener("scroll", scheduleParallax);
       window.removeEventListener("resize", scheduleParallax);

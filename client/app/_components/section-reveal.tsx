@@ -32,6 +32,8 @@ export function SectionReveal({ id, className, children }: SectionRevealProps) {
       data-scroll-section
       tabIndex={-1}
       aria-labelledby={`${id}-title`}
+      // Skips layout and paint until near the screen; see [data-deferred-section] in globals.css.
+      data-deferred-section
       className={`group/reveal ${className}`}
       onFocusCapture={(event) => {
         if (event.target !== event.currentTarget) event.currentTarget.dataset.reveal = "done";

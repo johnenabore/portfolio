@@ -78,6 +78,7 @@ export function HeroMenu() {
     if (!clips) return;
     const root = document.documentElement;
     root.style.setProperty("--menu-scrollbar-width", `${window.innerWidth - root.clientWidth}px`);
+    root.setAttribute("data-menu-open", "");
     menu.setAttribute("data-scroll-lock", "");
     menu.removeAttribute("data-closing");
     trigger.current?.focus({ preventScroll: true });
@@ -102,6 +103,7 @@ export function HeroMenu() {
     setOpen(false);
     menu.removeAttribute("data-closing");
     menu.removeAttribute("data-scroll-lock");
+    document.documentElement.removeAttribute("data-menu-open");
     document.documentElement.style.removeProperty("--menu-scrollbar-width");
   }
 

@@ -69,6 +69,7 @@ function canAnimateViewer(media: HTMLElement) {
 }
 
 function releaseViewerScroll() {
+  document.documentElement.removeAttribute("data-screenshot-open");
   document.documentElement.style.removeProperty("--screenshot-scrollbar-width");
 }
 
@@ -94,6 +95,7 @@ export function ProjectScreenshots({ shots }: { shots: readonly Screenshot[] }) 
 
     const root = document.documentElement;
     root.style.setProperty("--screenshot-scrollbar-width", `${window.innerWidth - root.clientWidth}px`);
+    root.setAttribute("data-screenshot-open", "");
     opener.current = trigger;
     trigger.focus({ preventScroll: true });
     viewer.showModal();

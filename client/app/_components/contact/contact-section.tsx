@@ -48,7 +48,7 @@ export function ContactSection() {
           </div>
           <p className={cn("mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/60 [--section-enter-delay:.55s]", reveal)}>
             <span className="inline-flex items-center gap-2">
-              <span aria-hidden="true" className="size-1.5 rounded-full bg-[#21be65] site-motion:animate-live-pulse" />
+              <span aria-hidden="true" className="relative size-1.5 rounded-full bg-[#21be65] after:absolute after:inset-0 after:rounded-full after:bg-[#21be65] site-motion:after:animate-live-pulse" />
               Based in Laguna, PH
             </span>
             <LocalTime before="· It’s " after=" there now" />

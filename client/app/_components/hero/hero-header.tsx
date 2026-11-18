@@ -10,7 +10,7 @@ export function HeroHeader() {
         variant="outline"
         className="shrink gap-[.55em] rounded-[999px] px-[.72em] py-[.52em] text-[length:inherit] leading-[inherit] font-normal shadow-[0_1rem_2rem_#00000013,0_.2rem_.5rem_#00000009]"
       >
-        <span className="aspect-square w-[.72em] shrink-0 rounded-[50%] bg-[#21be65] site-motion:animate-live-pulse" aria-hidden="true" />
+        <span className="aspect-square w-[.72em] shrink-0 relative rounded-[50%] bg-[#21be65] after:absolute after:inset-0 after:rounded-[50%] after:bg-[#21be65] site-motion:after:animate-live-pulse" aria-hidden="true" />
         {heroContent.availability}
         <HeroLive />
       </Badge>
