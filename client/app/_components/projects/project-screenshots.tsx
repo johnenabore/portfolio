@@ -9,7 +9,7 @@ import { ClipCover, type ClipCoverDetails } from "./clip-cover";
 type Screenshot = {
   title: string;
   description: string;
-  image?: { src: string; alt: string };
+  image?: { src: string; alt: string; position?: string };
   cover?: ClipCoverDetails;
   video?: { src: string; width: number; height: number };
 };
@@ -29,7 +29,8 @@ const tones = [
 
 function ScreenshotMedia({ shot, index, expanded = false }: { shot: Screenshot; index: number; expanded?: boolean }) {
   if (shot.image) {
-    return <Image src={shot.image.src} alt={expanded ? shot.image.alt : ""} fill sizes={expanded ? "90vw" : "(max-width: 640px) 33vw, 240px"} className={expanded && !shot.video ? "object-contain" : "object-cover"} />;
+    const contain = expanded && !shot.video;
+    return <Image src={shot.image.src} alt={expanded ? shot.image.alt : ""} fill sizes={expanded ? "90vw" : "(max-width: 640px) 33vw, 240px"} style={contain ? undefined : { objectPosition: shot.image.position }} className={contain ? "object-contain" : "object-cover"} />;
   }
 
   return (

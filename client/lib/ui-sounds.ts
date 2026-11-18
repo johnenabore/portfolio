@@ -1,3 +1,5 @@
+import { readPreference, soundKey } from "./preferences";
+
 const sounds = {
   // Kenney Interface Sounds, CC0.
   click: { src: "/sounds/click_002.ogg", volume: 0.65 },
@@ -7,7 +9,13 @@ const sounds = {
 
 type UiSound = keyof typeof sounds;
 const tracks: Partial<Record<UiSound, HTMLAudioElement>> = {};
-let soundsEnabled = true;
+// Unknown until first use, then read from the saved menu preference.
+let soundsEnabled: boolean | null = null;
+
+export function uiSoundsEnabled() {
+  soundsEnabled ??= readPreference(soundKey) !== "off";
+  return soundsEnabled;
+}
 
 export function setUiSoundsEnabled(enabled: boolean) {
   soundsEnabled = enabled;
@@ -15,7 +23,7 @@ export function setUiSoundsEnabled(enabled: boolean) {
 }
 
 export function playUiSound(sound: UiSound) {
-  if (!soundsEnabled) return;
+  if (!uiSoundsEnabled()) return;
 
   const { src, volume } = sounds[sound];
   const track = (tracks[sound] ??= new Audio(src));

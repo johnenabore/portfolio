@@ -2,7 +2,11 @@ import { sectionFont } from "@/app/fonts";
 import { Button } from "@/components/ui/button";
 import { portfolioLinks } from "@/data/portfolio-links";
 import { cn } from "@/lib/utils";
+import { LocalTime } from "../local-time";
+import { Magnetic } from "../magnetic";
 import { SectionReveal } from "../section-reveal";
+import { Wordmark } from "../wordmark";
+import { CopyEmail } from "./copy-email";
 
 const reveal = "site-motion:group-data-[reveal=waiting]/reveal:opacity-0 site-motion:group-data-[reveal=visible]/reveal:animate-section-reveal";
 
@@ -29,17 +33,36 @@ export function ContactSection() {
             </span>
           </p>
           <div className={cn("mt-6 flex flex-wrap items-center gap-x-4 gap-y-3 [--section-enter-delay:.45s]", reveal)}>
-            <Button asChild variant="outline" size="pill" className="min-h-11 border-white bg-white px-5 text-sm font-medium text-primary">
-              <a href={`mailto:${portfolioLinks.contactEmail}`}>
-                Email me
-                <svg aria-hidden="true" viewBox="0 0 16 16" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M3.5 12.5 12 4m-7 0h7v7" />
-                </svg>
-              </a>
-            </Button>
-            <span className="min-w-0 wrap-anywhere text-sm text-white/75">{portfolioLinks.contactEmail}</span>
+            <Magnetic>
+              <Button asChild variant="outline" size="pill" className="min-h-11 border-white bg-white px-5 text-sm font-medium text-primary">
+                <a href={`mailto:${portfolioLinks.contactEmail}`}>
+                  Email me
+                  <svg aria-hidden="true" viewBox="0 0 16 16" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3.5 12.5 12 4m-7 0h7v7" />
+                  </svg>
+                </a>
+              </Button>
+            </Magnetic>
+            <CopyEmail email={portfolioLinks.contactEmail} />
+            <span className="min-w-0 basis-full wrap-anywhere text-sm text-white/75">{portfolioLinks.contactEmail}</span>
           </div>
+          <p className={cn("mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/60 [--section-enter-delay:.55s]", reveal)}>
+            <span className="inline-flex items-center gap-2">
+              <span aria-hidden="true" className="size-1.5 rounded-full bg-[#21be65] site-motion:animate-live-pulse" />
+              Based in Laguna, PH
+            </span>
+            <LocalTime before="· It’s " after=" there now" />
+            <span>· Usually replies within a day</span>
+          </p>
         </div>
+      </div>
+
+      {/* A large signature that wipes up into view at the very end of the page. */}
+      <div aria-hidden="true" className="mx-auto w-[90.6%] max-w-[90rem] overflow-hidden pt-4 pb-2">
+        <Wordmark
+          className="block h-auto w-full fill-current text-white site-motion:group-data-[reveal=waiting]/reveal:opacity-0 site-motion:group-data-[reveal=visible]/reveal:animate-signature"
+          firstClassName="fill-none stroke-current stroke-[3px]"
+        />
       </div>
 
       <footer className={cn("mx-auto flex w-[90.6%] max-w-[90rem] flex-wrap items-center justify-between gap-x-6 border-t border-white/25 py-3 text-sm [--section-enter-delay:.62s] [--hero-slide-from:0px]", reveal)}>

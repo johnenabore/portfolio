@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-import { EggSorterPlaceholder } from "@/app/_components/projects/egg-sorter-placeholder";
+import { CaseStudyNav } from "@/app/_components/projects/case-study-nav";
+import { NextProject } from "@/app/_components/projects/next-project";
 import { ProjectScreenshots } from "@/app/_components/projects/project-screenshots";
 import { ProjectWalkthrough } from "@/app/_components/projects/project-walkthrough";
 import { sectionFont } from "@/app/fonts";
@@ -59,7 +61,7 @@ export default function SmartEggSorterPage() {
                 </h1>
               </div>
               <div data-project-entry className="mt-4 site-motion:animate-case-details">
-                <p className="max-w-[27ch] text-[clamp(1.1rem,1.8vw,1.5rem)] leading-[1.35] tracking-[-.025em]">An offline-first app for egg fertility research.</p>
+                <p className="max-w-[27ch] text-[clamp(1.1rem,1.8vw,1.5rem)] leading-[1.35] tracking-[-.025em]">{description}</p>
                 <ul className="mt-5 flex flex-wrap gap-2" aria-label="Project tags">
                   {smartEggSorter.tags.map((tag) => (
                     <li key={tag}><Badge variant="outline" className="bg-accent px-3 py-1">{tag}</Badge></li>
@@ -71,43 +73,41 @@ export default function SmartEggSorterPage() {
               </div>
             </div>
 
-            <figure data-project-entry className="overflow-hidden rounded-2xl bg-[#18211c] text-[#e6ecdf] shadow-[0_1.5rem_3.5rem_#18211c24] site-motion:animate-case-art">
-              <div className="aspect-[47/33.5] w-full">
-                <EggSorterPlaceholder />
-              </div>
-              <figcaption className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-white/15 px-4 py-3 text-xs sm:px-5 sm:text-sm">
-                <span>Concept illustration</span>
-                <span className="text-white/65">Placeholder artwork</span>
-              </figcaption>
+            <figure data-project-entry className="rounded-[clamp(1.25rem,2.4vw,1.9rem)] bg-black/[.055] p-[clamp(.4rem,.9vw,.7rem)] site-motion:animate-case-art">
+              <Image
+                src={smartEggSorter.thumbnail.src}
+                alt={smartEggSorter.thumbnail.alt}
+                width={1800}
+                height={1200}
+                sizes="(min-width: 1344px) 650px, (min-width: 768px) 49vw, 91vw"
+                loading="eager"
+                className="h-auto w-full rounded-[clamp(.9rem,1.8vw,1.4rem)]"
+              />
             </figure>
           </header>
 
           <div data-project-entry className="mt-10 grid gap-3 border-y border-border py-4 text-sm site-motion:animate-case-meta sm:grid-cols-3 sm:gap-5">
             <p><span className="mr-2 text-ring">Role</span> {smartEggSorter.contribution}</p>
-            <p><span className="mr-2 text-ring">Live demo</span> Link pending</p>
-            <p><span className="mr-2 text-ring">Source code</span> Link pending</p>
+            <p>
+              <span className="mr-2 text-ring">Demo video</span>
+              <a href={smartEggSorter.demoVideo} target="_blank" rel="noreferrer" className="font-medium underline underline-offset-4 hover:decoration-2">
+                Watch on YouTube <span aria-hidden="true">↗</span>
+              </a>
+            </p>
+            <p><span className="mr-2 text-ring">Source code</span> Private Repo</p>
           </div>
 
           <div className="mt-[clamp(2.5rem,6vw,5rem)] grid items-start gap-x-[8%] gap-y-9 md:grid-cols-[minmax(8rem,1fr)_minmax(0,3fr)]">
-            <nav aria-label="On this page" className="border-t border-border pt-4 md:sticky md:top-8">
-              <p className="text-xs font-semibold tracking-[.14em] text-ring uppercase">On this page</p>
-              <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm md:grid">
-                {sections.map(({ id, label }) => (
-                  <li key={id}>
-                    <a className="inline-flex min-h-9 items-center underline-offset-4 hover:underline focus-visible:underline" href={`#${id}`}>{label}</a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+            <CaseStudyNav sections={sections} />
 
             <div className="min-w-0 space-y-14">
               <section id="overview" tabIndex={-1} className="scroll-mt-8">
                 <h2 className="mb-4 text-3xl font-semibold tracking-[-.045em] sm:text-4xl">Overview</h2>
                 <p className="max-w-[65ch] leading-relaxed text-[#484848]">
-                  Smart Egg Sorter is my thesis project on computer vision for egg fertility detection. For the companion app, the challenge was keeping the workflow useful on farms with unreliable internet.
+                  Our thesis asks whether computer vision can distinguish fertile eggs from infertile ones on Day 5 of incubation. At that stage, early signs of development can be hard to spot during candling, when you shine a light through the shell to look inside.
                 </p>
                 <p className="mt-4 max-w-[65ch] leading-relaxed text-[#484848]">
-                  I rebuilt the app as an offline-first progressive web app, integrated the ESP32 for pairing and live egg detection, and worked on comparing models across duck, chicken, and quail datasets.
+                  I helped compare models on duck, chicken, and quail egg images. I also rebuilt the companion app to work offline and integrated the ESP32 so the app could pair with the sorter and receive live egg-detection events.
                 </p>
               </section>
 
@@ -168,6 +168,8 @@ export default function SmartEggSorterPage() {
               </section>
             </div>
           </div>
+
+          <NextProject currentId={smartEggSorter.id} />
 
           <footer className="mt-12 border-t border-border pt-4">
             <BackToProjects />

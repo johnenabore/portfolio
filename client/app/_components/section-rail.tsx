@@ -1,18 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 const sections = [
   { id: "home", label: "Home" },
   { id: "projects", label: "Projects" },
   { id: "about", label: "About" },
+  { id: "certificates", label: "Certificates" },
   { id: "services", label: "Services" },
   { id: "contact", label: "Contact" },
 ] as const;
 
+// How long the active label stays up after entering a section, before it fades so it never covers content.
+const announceMs = 1600;
+
 export function SectionRail() {
   const [active, setActive] = useState<string>("home");
+  const [announcing, setAnnouncing] = useState(false);
+  const announceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => {
+    if (announceTimer.current) clearTimeout(announceTimer.current);
+  }, []);
 
   useEffect(() => {
     const targets = sections.flatMap(({ id }) => {
@@ -30,6 +40,9 @@ export function SectionRail() {
       if (next === current) return;
       current = next;
       setActive(next);
+      setAnnouncing(true);
+      if (announceTimer.current) clearTimeout(announceTimer.current);
+      announceTimer.current = setTimeout(() => setAnnouncing(false), announceMs);
     }
 
     function schedule() {
@@ -48,12 +61,12 @@ export function SectionRail() {
     };
   }, []);
 
-  const dark = active === "contact";
+  const dark = active === "contact" || active === "certificates";
 
   return (
     <nav
       aria-label="Page sections"
-      className="fixed top-1/2 right-1 z-10 hidden -translate-y-1/2 min-[1120px]:fine-pointer:block xl:right-2"
+      className="group/rail fixed top-1/2 right-1 z-10 hidden -translate-y-1/2 min-[1120px]:fine-pointer:block xl:right-2"
     >
       <ol className="grid list-none p-0">
         {sections.map(({ id, label }) => {
@@ -79,7 +92,12 @@ export function SectionRail() {
                   className={cn(
                     "pointer-events-none absolute top-1/2 right-full -translate-y-1/2 rounded-full border px-2.5 py-1 text-[.65rem] font-semibold tracking-[.12em] whitespace-nowrap uppercase site-motion:transition-[translate,opacity] site-motion:duration-200",
                     dark ? "border-white/25 bg-primary" : "border-border bg-background",
-                    selected ? "opacity-100" : "translate-x-1 opacity-0 group-hover/marker:translate-x-0 group-hover/marker:opacity-100 group-focus-visible/marker:translate-x-0 group-focus-visible/marker:opacity-100",
+                    // The active label shows briefly on arrival and whenever the rail is hovered or focused.
+                    selected && announcing
+                      ? "opacity-100"
+                      : selected
+                        ? "translate-x-1 opacity-0 group-hover/rail:translate-x-0 group-hover/rail:opacity-100 group-focus-within/rail:translate-x-0 group-focus-within/rail:opacity-100"
+                        : "translate-x-1 opacity-0 group-hover/marker:translate-x-0 group-hover/marker:opacity-100 group-focus-visible/marker:translate-x-0 group-focus-visible/marker:opacity-100",
                   )}
                 >
                   {label}

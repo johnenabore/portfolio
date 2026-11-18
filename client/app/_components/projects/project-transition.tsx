@@ -82,9 +82,12 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
     const element = curtain.current;
     const root = document.documentElement;
     if (active.current) return true;
+    const destination = new URL(href, window.location.href).pathname;
     if (
-      pathname !== "/" ||
+      // The curtain runs from the homepage, the projects page, or another case study into a case study.
+      (pathname !== "/" && pathname !== "/projects" && !pathname.startsWith("/projects/")) ||
       !href.startsWith("/projects/") ||
+      destination === pathname ||
       !element?.animate ||
       !CSS.supports("clip-path", closingClip[0].clipPath) ||
       !window.matchMedia("(prefers-reduced-motion: no-preference)").matches ||
@@ -100,7 +103,7 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
     );
     const run: CurtainRun = {
       source: pathname,
-      destination: new URL(href, window.location.href).pathname,
+      destination,
       animation: closing,
       timeout: window.setTimeout(() => openCurtain(run, false), 4500),
       opening: false,

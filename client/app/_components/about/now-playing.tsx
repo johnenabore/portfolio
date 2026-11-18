@@ -6,9 +6,9 @@ import type { SpotifyPlayback } from "@/lib/spotify/playback";
 import { VinylRecord } from "./vinyl-record";
 
 const playbackLabels = {
-  idle: "Nothing playing right now.",
-  disconnected: "Spotify isn’t connected yet.",
-  unavailable: "Playback status is temporarily unavailable.",
+  idle: "Nothing playing right now. Probably a quiet focus session.",
+  disconnected: "My Spotify isn’t connected yet. Check back soon.",
+  unavailable: "Can’t reach Spotify right now. The music’s still on, I promise.",
 };
 
 export function NowPlaying() {
@@ -72,7 +72,9 @@ export function NowPlaying() {
         <h3 id="now-playing-title" className="max-w-[23ch] text-[clamp(1.3rem,2vw,1.85rem)] leading-[1.16] font-semibold tracking-[-.035em]">
           What I’m listening to right now
         </h3>
-        <p className="mt-2 text-sm text-ring">Track updates from my Spotify account.</p>
+        <p className="mt-2 max-w-[46ch] text-sm leading-relaxed text-ring">
+          I almost always have music on, whether I’m coding, studying, or on the road. This card updates live from my Spotify.
+        </p>
       </header>
 
       <VinylRecord imageUrl={track?.imageUrl} spinning={Boolean(track)} />

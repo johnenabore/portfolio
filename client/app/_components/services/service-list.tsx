@@ -1,10 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { useId, useState, type CSSProperties } from "react";
 import { Button } from "@/components/ui/button";
 import { services } from "@/data/services";
-import { ProjectPlaceholder } from "../projects/project-placeholder";
+import { ServiceIllustration } from "./service-illustration";
 
 export function ServiceList() {
   const listId = useId();
@@ -65,12 +64,13 @@ export function ServiceList() {
                     <span className="block max-w-[36ch] pt-3 text-sm leading-relaxed font-normal text-white/75 sm:text-base md:h-(--service-detail)">
                       {service.description}
                     </span>
-                    <span aria-hidden="true" className="pointer-events-none relative mt-5 mb-2 ms-3 block aspect-[4/3] w-[62%] translate-y-2 rotate-3 overflow-hidden bg-white shadow-[0_12px_36px_#0003] site-motion:transition-[translate,rotate] site-motion:duration-500 site-motion:ease-hero-intro group-data-expanded/service:translate-y-0 group-data-expanded/service:rotate-8 md:absolute md:top-[-17%] md:left-[75%] md:mt-0 md:mb-0 md:ms-0 md:w-[17.5%]">
-                      {"image" in service ? (
-                        <Image src={service.image} alt="" fill sizes="(min-width: 768px) 24vw, 55vw" className="object-cover" />
-                      ) : (
-                        <ProjectPlaceholder artwork={service.artwork} />
-                      )}
+                    {/* Line art drawn straight onto the dark open row; it draws itself as the row opens. */}
+                    <span className="pointer-events-none mt-5 mb-1 block w-[min(62%,15rem)] md:absolute md:inset-y-0 md:left-[77.5%] md:m-0 md:flex md:w-[12.5%] md:items-center">
+                      <ServiceIllustration
+                        kind={service.illustration}
+                        // `size-auto` opts out of the Button's rule that shrinks every child SVG to 16px.
+                        className="block aspect-[4/3] size-auto w-full text-white/85 site-motion:translate-y-2 site-motion:transition-[translate] site-motion:duration-500 site-motion:ease-hero-intro site-motion:group-data-expanded/service:translate-y-0"
+                      />
                     </span>
                   </span>
                 </span>

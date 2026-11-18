@@ -1,3 +1,4 @@
+import { certificates } from "@/data/certificates";
 import { portfolioLinks } from "@/data/portfolio-links";
 import { projects } from "@/data/projects";
 
@@ -17,6 +18,11 @@ export const heroNavigation: readonly { label: string; count?: string; href?: st
     href: "#projects",
   },
   { label: "About", href: "#about" },
+  {
+    label: "Certificates",
+    count: String(certificates.length).padStart(2, "0"),
+    href: "#certificates",
+  },
   { label: "Services", href: "#services" },
   { label: "Contact", href: portfolioLinks.contact },
 ];

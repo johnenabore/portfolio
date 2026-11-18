@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/button";
-import { setUiSoundsEnabled } from "@/lib/ui-sounds";
+import { reduceMotionKey, savePreference, soundKey, subscribePreferences } from "@/lib/preferences";
+import { setUiSoundsEnabled, uiSoundsEnabled } from "@/lib/ui-sounds";
 import { heroNavigation } from "./hero-content";
 import { ViewerStats } from "./viewer-stats";
 
@@ -34,8 +35,13 @@ export function HeroMenu() {
   const dialogId = useId();
   const titleId = useId();
   const [open, setOpen] = useState(false);
-  const [reduceMotion, setReduceMotion] = useState(false);
-  const [soundEnabled, setSoundEnabled] = useState(true);
+  // Both switches mirror saved preferences (see lib/preferences.ts); the server renders the defaults.
+  const reduceMotion = useSyncExternalStore(
+    subscribePreferences,
+    () => document.documentElement.hasAttribute("data-reduce-motion"),
+    () => false,
+  );
+  const soundEnabled = useSyncExternalStore(subscribePreferences, uiSoundsEnabled, () => true);
 
   function positionMenu() {
     const menu = dialog.current;
@@ -138,12 +144,12 @@ export function HeroMenu() {
 
   function toggleMotion() {
     document.documentElement.toggleAttribute("data-reduce-motion", !reduceMotion);
-    setReduceMotion(!reduceMotion);
+    savePreference(reduceMotionKey, reduceMotion ? "off" : "on");
   }
 
   function toggleSound() {
     setUiSoundsEnabled(!soundEnabled);
-    setSoundEnabled(!soundEnabled);
+    savePreference(soundKey, soundEnabled ? "off" : "on");
   }
 
   return (

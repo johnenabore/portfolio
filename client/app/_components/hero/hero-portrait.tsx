@@ -25,7 +25,7 @@ export function HeroPortrait() {
 
   return (
     <figure
-      className="group/portrait pointer-events-none absolute bottom-0 left-[51.5%] z-1 m-0 aspect-[4/3] h-[min(65.5%,44vw)] -translate-x-1/2 site-motion:animate-hero-portrait compact:relative compact:inset-auto compact:mx-auto compact:mt-[-2.5%] compact:h-auto compact:w-[min(100%,34rem)] compact:translate-none"
+      className="group/portrait pointer-events-none origin-bottom [scale:calc(1_-_.06_*_var(--hero-progress,0))] absolute bottom-0 left-[51.5%] z-1 m-0 aspect-[4/3] h-[min(65.5%,44vw)] -translate-x-1/2 site-motion:animate-hero-portrait compact:relative compact:inset-auto compact:mx-auto compact:mt-[-2.5%] compact:h-auto compact:w-[min(100%,34rem)] compact:translate-none"
       onPointerEnter={moveReveal}
       onPointerMove={moveReveal}
       onPointerLeave={hideReveal}

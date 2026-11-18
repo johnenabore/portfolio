@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ProjectList } from "@/app/_components/projects/project-list";
+import { ProjectCard } from "@/app/_components/projects/project-card";
 import { sectionFont } from "@/app/fonts";
 import { projects } from "@/data/projects";
 import { cn } from "@/lib/utils";
@@ -24,9 +24,13 @@ export default function ProjectsPage() {
           <h1 data-project-entry className="mb-[clamp(2rem,4vw,3.75rem)] text-[clamp(3rem,8vw,7rem)] leading-none font-[560] tracking-[-.065em] site-motion:animate-case-title">
             Projects
           </h1>
-          <div data-project-entry className="site-motion:animate-case-details">
-            <ProjectList projects={projects} titleLevel="h2" />
-          </div>
+          <ul data-project-entry className="grid list-none gap-x-[clamp(1.25rem,3vw,2.5rem)] gap-y-[clamp(2.75rem,6vw,5rem)] p-0 site-motion:animate-case-details sm:grid-cols-2">
+            {projects.map((project) => (
+              <li key={project.id}>
+                <ProjectCard project={project} />
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </main>

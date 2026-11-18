@@ -2,6 +2,7 @@ import { sectionFont } from "@/app/fonts";
 import { aboutContent } from "@/data/about";
 import { cn } from "@/lib/utils";
 import { SectionReveal } from "../section-reveal";
+import { Journey } from "./journey";
 import { NowPlaying } from "./now-playing";
 
 const reveal = "site-motion:group-data-[reveal=waiting]/reveal:opacity-0 site-motion:group-data-[reveal=visible]/reveal:animate-section-reveal";
@@ -43,6 +44,7 @@ export function AboutSection() {
         </div>
         <div className={cn("min-w-0 [--section-enter-delay:1.02s] [--hero-slide-from:1.75rem]", reveal)}>
           <NowPlaying />
+          <Journey />
         </div>
       </div>
     </SectionReveal>

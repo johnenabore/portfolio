@@ -1,23 +1,19 @@
 import Link from "next/link";
 import { sectionFont } from "@/app/fonts";
 import { Button } from "@/components/ui/button";
-import { projects, smartEggSorter, type Project } from "@/data/projects";
+import { featuredProjects, projects } from "@/data/projects";
 import { cn } from "@/lib/utils";
 import { SectionReveal } from "../section-reveal";
+import { FeatureReveal } from "./feature-reveal";
 import { FeaturedProject } from "./featured-project";
 import { ProjectList } from "./project-list";
 import { ProjectListReveal } from "./project-list-reveal";
 
-const projectPreviews = [
-  { id: "next-project", title: "Next project", subtitle: "Coming soon" },
-  { id: "future-project", title: "More work in progress" },
-] satisfies readonly Project[];
-
 export function ProjectsSection() {
-  const selected = [
-    ...projects.filter((project) => project.id !== smartEggSorter.id),
-    ...projectPreviews,
-  ].slice(0, 2);
+  // Only real work below the featured blocks; no "coming soon" placeholders.
+  const selected = projects
+    .filter((project) => !featuredProjects.some(({ id }) => id === project.id))
+    .slice(0, 2);
 
   return (
     <SectionReveal id="projects" className={cn("min-h-svh snap-start snap-always bg-accent pb-[clamp(3rem,7vw,6rem)]", sectionFont.className)}>
@@ -33,7 +29,13 @@ export function ProjectsSection() {
       </header>
 
       <div className="mx-auto mt-[clamp(2rem,4.8vw,4.5rem)] w-[90.6%] max-w-[75rem]">
-        <FeaturedProject />
+        <div className="space-y-[clamp(3rem,7vw,6rem)]">
+          {featuredProjects.map((project, index) => (
+            <FeatureReveal key={project.id}>
+              <FeaturedProject project={project} reverse={index % 2 === 1} />
+            </FeatureReveal>
+          ))}
+        </div>
 
         <div className="mt-[clamp(2rem,4.5vw,4rem)]">
           <ProjectListReveal>

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { preferenceScript } from "@/lib/preferences";
+import { Delights } from "./_components/delights";
 import { ProjectTransitionProvider } from "./_components/projects/project-transition";
 import { ViewerProvider } from "./_components/viewer-provider";
 import { UiClickSound } from "./_components/ui-click-sound";
@@ -18,9 +20,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className="antialiased site-motion:scroll-smooth">
+    // The inline script may add data-reduce-motion to <html> before hydration.
+    <html lang="en" className="antialiased site-motion:scroll-smooth" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: preferenceScript }} />
+      </head>
       <body>
         <UiClickSound />
+        <Delights />
         <ViewerProvider>
           <ProjectTransitionProvider>{children}</ProjectTransitionProvider>
         </ViewerProvider>

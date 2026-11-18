@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { heroContent, heroNavigation } from "./hero-content";
+import { HeroLive } from "./hero-live";
 import { HeroMenu } from "./hero-menu";
 
 export function HeroHeader() {
@@ -9,8 +10,9 @@ export function HeroHeader() {
         variant="outline"
         className="shrink gap-[.55em] rounded-[999px] px-[.72em] py-[.52em] text-[length:inherit] leading-[inherit] font-normal shadow-[0_1rem_2rem_#00000013,0_.2rem_.5rem_#00000009]"
       >
-        <span className="aspect-square w-[.72em] rounded-[50%] bg-[#21be65]" aria-hidden="true" />
+        <span className="aspect-square w-[.72em] shrink-0 rounded-[50%] bg-[#21be65] site-motion:animate-live-pulse" aria-hidden="true" />
         {heroContent.availability}
+        <HeroLive />
       </Badge>
       <nav
         className="flex flex-1 justify-evenly gap-3 compact:order-1 compact:basis-full compact:justify-between"

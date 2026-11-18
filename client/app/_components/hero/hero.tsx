@@ -1,6 +1,7 @@
 import { HeroHeader } from "./hero-header";
 import { HeroIntro } from "./hero-intro";
 import { HeroPortrait } from "./hero-portrait";
+import { HeroScroll } from "./hero-scroll";
 import { HeroSocials } from "./hero-socials";
 import { HeroTitle } from "./hero-title";
 
@@ -18,6 +19,7 @@ export function Hero() {
       <HeroPortrait />
       <HeroIntro />
       <HeroSocials />
+      <HeroScroll />
     </section>
   );
 }

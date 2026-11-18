@@ -1,4 +1,6 @@
 import { portfolioLinks } from "@/data/portfolio-links";
+import { LocalTime } from "../local-time";
+import { Magnetic } from "../magnetic";
 import { heroContent } from "./hero-content";
 import { HeroCta } from "./hero-cta";
 
@@ -13,11 +15,16 @@ export function HeroIntro() {
       <div className="overflow-hidden">
         <p className="mt-[.95em] leading-[1.4] text-[#484848] site-motion:animate-hero-description">
           {heroContent.introduction}
+          <LocalTime className="mt-[.35em] block text-[.85em] text-ring" before="It’s " after=" here right now." />
         </p>
       </div>
       <div className="mt-[1.5em] flex w-max max-w-[90vw] flex-wrap gap-2 site-motion:animate-hero-cta">
-        <HeroCta label={heroContent.collaborateLabel} href={portfolioLinks.contact} />
-        <HeroCta label="Resume" href={portfolioLinks.resume} variant="outline" />
+        <Magnetic>
+          <HeroCta label={heroContent.collaborateLabel} href={portfolioLinks.contact} />
+        </Magnetic>
+        <Magnetic>
+          <HeroCta label="Resume" href={portfolioLinks.resume} variant="outline" />
+        </Magnetic>
       </div>
     </div>
   );

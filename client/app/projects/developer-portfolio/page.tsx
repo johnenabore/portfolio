@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { NextProject } from "@/app/_components/projects/next-project";
 import { sectionFont } from "@/app/fonts";
 import { cn } from "@/lib/utils";
 
@@ -61,7 +62,8 @@ export default function DeveloperPortfolioPage() {
               <p className="max-w-[56ch] text-sm leading-relaxed text-[#484848] sm:text-base">{description}</p>
             </section>
           ))}
-          <Link href="/#projects" className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold underline underline-offset-4">
+          <NextProject currentId="developer-portfolio" />
+          <Link href="/#projects" className="mt-8 inline-flex min-h-11 items-center gap-2 text-sm font-semibold underline underline-offset-4">
             Back to portfolio <span aria-hidden="true">↗</span>
           </Link>
         </div>

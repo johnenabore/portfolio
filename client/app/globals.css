@@ -42,6 +42,89 @@
   --animate-case-details: project-rise-in .62s var(--ease-hero-intro) .22s both;
   --animate-case-meta: project-rise-in .58s var(--ease-hero-intro) .36s both;
   --animate-case-art: case-art-in .82s var(--ease-hero-intro) .13s both;
+  --animate-live-pulse: live-pulse 2.2s ease-out infinite;
+  --animate-intro-letter: intro-letter .7s var(--ease-hero-intro) calc(var(--i, 0) * 45ms + 100ms) both;
+  --animate-signature: signature-wipe 1.1s var(--ease-hero-intro) .3s both;
+  --animate-toast-in: toast-in .32s var(--ease-hero-intro) both;
+  --animate-train-bob: train-bob 2.4s ease-in-out infinite;
+  --animate-svc-pulse: svc-pulse 1.8s ease-in-out infinite;
+
+  @keyframes train-bob {
+    0%, 100% { translate: 0 0; }
+    50% { translate: 0 -1px; }
+  }
+
+  --animate-svc-spin: svc-spin 4s linear infinite;
+  --animate-svc-travel: svc-travel 1.6s linear infinite;
+  --animate-svc-ripple: svc-ripple 2.6s ease-out infinite;
+  --animate-svc-cursor: svc-cursor 2.6s var(--ease-hero-intro) infinite;
+
+  /* Service illustrations: loops that run only while a service row is open. */
+  @keyframes svc-pulse {
+    0%, 100% { opacity: .2; }
+    40% { opacity: 1; }
+  }
+
+  @keyframes svc-spin {
+    to { rotate: 1turn; }
+  }
+
+  @keyframes svc-travel {
+    from { stroke-dashoffset: 1; }
+    to { stroke-dashoffset: 0; }
+  }
+
+  @keyframes svc-ripple {
+    0%, 42% { opacity: 0; scale: .3; }
+    48% { opacity: .9; scale: .4; }
+    75%, 100% { opacity: 0; scale: 1.7; }
+  }
+
+  @keyframes svc-cursor {
+    0%, 8% { translate: 0 0; scale: 1; }
+    40% { translate: -10px -34px; scale: 1; }
+    46% { translate: -10px -34px; scale: .82; }
+    52%, 72% { translate: -10px -34px; scale: 1; }
+    100% { translate: 0 0; scale: 1; }
+  }
+
+  @keyframes live-pulse {
+    0% { box-shadow: 0 0 0 0 #21be6573; }
+    70%, 100% { box-shadow: 0 0 0 .55em #21be6500; }
+  }
+
+  @keyframes intro-letter {
+    from {
+      opacity: 0;
+      transform: translateY(105%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes signature-wipe {
+    from {
+      clip-path: inset(100% 0 0 0);
+      transform: translateY(12%);
+    }
+    to {
+      clip-path: inset(0);
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes toast-in {
+    from {
+      opacity: 0;
+      transform: translateY(.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
   @keyframes case-art-in {
     from {
@@ -205,6 +288,14 @@ html:has([data-screenshot-viewer][open]) {
 
 html:has([data-screenshot-viewer][open]) body {
   padding-inline-end: var(--screenshot-scrollbar-width, 0px);
+}
+
+html:has([data-certificate-viewer][open]) {
+  overflow: hidden;
+}
+
+html:has([data-certificate-viewer][open]) body {
+  padding-inline-end: var(--certificate-scrollbar-width, 0px);
 }
 
 @media (prefers-reduced-motion: no-preference) {
