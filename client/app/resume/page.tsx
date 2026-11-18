@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 const resumePath = "/documents/john-enabore-resume";
 const pages = [
   { number: 1, description: "Education, experience, and projects" },
-  { number: 2, description: "Leadership, activities, skills, and interests" },
+  { number: 2, description: "Projects, leadership, activities, certifications, skills, and interests" },
 ];
 
 export default function ResumePage() {

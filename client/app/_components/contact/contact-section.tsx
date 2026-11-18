@@ -67,6 +67,18 @@ export function ContactSection() {
 
       <footer className={cn("mx-auto flex w-[90.6%] max-w-[90rem] flex-wrap items-center justify-between gap-x-6 border-t border-white/25 py-3 text-sm [--section-enter-delay:.62s] [--hero-slide-from:0px]", reveal)}>
         <span className="text-white/75">John Enabore</span>
+        <ul aria-label="Social profiles" className="m-0 flex list-none flex-wrap gap-x-5 p-0">
+          {[
+            { label: "LinkedIn", href: portfolioLinks.linkedin },
+            { label: "GitHub", href: portfolioLinks.github },
+          ].filter((link): link is { label: string; href: string } => Boolean(link.href)).map(({ label, href }) => (
+            <li key={label}>
+              <a href={href} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center gap-1.5 underline-offset-4 hover:underline focus-visible:underline">
+                {label} <span aria-hidden="true">↗</span>
+              </a>
+            </li>
+          ))}
+        </ul>
         <a href="#home" className="inline-flex min-h-11 items-center gap-2 underline-offset-4 hover:underline focus-visible:underline">
           Back to top <span aria-hidden="true">↑</span>
         </a>

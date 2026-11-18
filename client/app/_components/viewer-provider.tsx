@@ -19,9 +19,10 @@ export function ViewerProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const controller = new AbortController();
     let pending = false;
+    let disabled = false;
 
     async function heartbeat() {
-      if (document.hidden || pending || controller.signal.aborted) return;
+      if (document.hidden || pending || disabled || controller.signal.aborted) return;
       pending = true;
       try {
         if (navigator.locks) {
@@ -37,6 +38,12 @@ export function ViewerProvider({ children }: { children: ReactNode }) {
         if (!response.ok) throw new Error("Viewer stats unavailable");
 
         const result: ViewerStats = await response.json();
+        if (result.status === "disabled") {
+          // The counter isn't set up on this deployment, so stop asking.
+          disabled = true;
+          if (!controller.signal.aborted) setStats({ status: "unavailable" });
+          return;
+        }
         if (
           result.status !== "ready" ||
           !Number.isSafeInteger(result.active) || result.active < 0 ||

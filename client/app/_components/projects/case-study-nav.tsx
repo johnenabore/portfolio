@@ -2,12 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { markCaseStudyHydrated } from "./case-study-motion";
 
 type Section = { id: string; label: string };
 
 // "On this page" navigation that highlights the section being read and shows where you are.
 export function CaseStudyNav({ sections }: { sections: readonly Section[] }) {
   const [active, setActive] = useState(sections[0]?.id);
+
+  // This page has hydrated; the layout can now tag its blocks for the scroll reveals.
+  useEffect(markCaseStudyHydrated, []);
 
   useEffect(() => {
     const elements = sections

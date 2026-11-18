@@ -29,8 +29,9 @@ export async function POST(request: NextRequest) {
 
   const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
+  // Not configured (e.g. local development without Redis keys): a normal answer, not a server error.
   if (!url || !token) {
-    return Response.json({ status: "unavailable" }, { status: 503, headers });
+    return Response.json({ status: "disabled" }, { headers });
   }
 
   // Keep local and preview visits out of the public production count.
