@@ -8,10 +8,11 @@ import "./globals.css";
 
 const title = "John Enabore | Developer Portfolio";
 const description = "John Enabore’s portfolio. Explore web development and computer vision projects, view his résumé, or get in touch.";
-const siteUrl = process.env.PORTFOLIO_SITE_URL;
+// Absolute base for link previews (Open Graph and Twitter images). PORTFOLIO_SITE_URL can override it.
+const siteUrl = process.env.PORTFOLIO_SITE_URL || "https://john-enabore.vercel.app";
 
 export const metadata: Metadata = {
-  ...(siteUrl && { metadataBase: new URL(siteUrl) }),
+  metadataBase: new URL(siteUrl),
   title,
   description,
   openGraph: { type: "website", siteName: "John Enabore Portfolio", title, description },

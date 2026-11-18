@@ -6,18 +6,14 @@ import { NextProject } from "@/app/_components/projects/next-project";
 import { ProjectScreenshots } from "@/app/_components/projects/project-screenshots";
 import { sectionFont } from "@/app/fonts";
 import { Badge } from "@/components/ui/badge";
+import { caseStudyMetadata } from "@/lib/case-study-metadata";
 import { theWheel } from "@/data/projects";
 import { theWheelScreens } from "@/data/the-wheel";
 
 const title = "The Wheel | John Enabore";
 const description = theWheel.description;
 
-export const metadata: Metadata = {
-  title,
-  description,
-  openGraph: { type: "article", title, description },
-  twitter: { card: "summary_large_image", title, description },
-};
+export const metadata: Metadata = caseStudyMetadata(title, description, theWheel);
 
 const sections = [
   { id: "overview", label: "Overview" },

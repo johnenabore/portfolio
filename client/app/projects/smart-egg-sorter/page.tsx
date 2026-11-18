@@ -7,18 +7,14 @@ import { ProjectScreenshots } from "@/app/_components/projects/project-screensho
 import { ProjectWalkthrough } from "@/app/_components/projects/project-walkthrough";
 import { sectionFont } from "@/app/fonts";
 import { Badge } from "@/components/ui/badge";
+import { caseStudyMetadata } from "@/lib/case-study-metadata";
 import { smartEggSorter } from "@/data/projects";
 import { smartEggSorterClips } from "@/data/smart-egg-sorter";
 
 const title = "Smart Egg Sorter | John Enabore";
 const description = smartEggSorter.description;
 
-export const metadata: Metadata = {
-  title,
-  description,
-  openGraph: { type: "article", title, description },
-  twitter: { card: "summary_large_image", title, description },
-};
+export const metadata: Metadata = caseStudyMetadata(title, description, smartEggSorter);
 
 const sections = [
   { id: "overview", label: "Overview" },

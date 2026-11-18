@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { NextProject } from "@/app/_components/projects/next-project";
 import { sectionFont } from "@/app/fonts";
+import { developerPortfolio } from "@/data/projects";
+import { caseStudyMetadata } from "@/lib/case-study-metadata";
 import { cn } from "@/lib/utils";
 
 const notes = [
@@ -22,10 +24,11 @@ const notes = [
   },
 ];
 
-export const metadata: Metadata = {
-  title: "Developer Portfolio | John Enabore",
-  description: "How I built my portfolio with Next.js, TypeScript, and Tailwind CSS.",
-};
+export const metadata: Metadata = caseStudyMetadata(
+  "Developer Portfolio | John Enabore",
+  "How I built my portfolio with Next.js, TypeScript, and Tailwind CSS.",
+  developerPortfolio,
+);
 
 export default function DeveloperPortfolioPage() {
   return (

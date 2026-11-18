@@ -6,18 +6,14 @@ import { NextProject } from "@/app/_components/projects/next-project";
 import { ProjectScreenshots } from "@/app/_components/projects/project-screenshots";
 import { sectionFont } from "@/app/fonts";
 import { Badge } from "@/components/ui/badge";
+import { caseStudyMetadata } from "@/lib/case-study-metadata";
 import { expentra } from "@/data/projects";
 import { expentraScreens } from "@/data/expentra";
 
 const title = "Expentra | John Enabore";
 const description = expentra.description;
 
-export const metadata: Metadata = {
-  title,
-  description,
-  openGraph: { type: "article", title, description },
-  twitter: { card: "summary_large_image", title, description },
-};
+export const metadata: Metadata = caseStudyMetadata(title, description, expentra);
 
 const sections = [
   { id: "overview", label: "Overview" },

@@ -6,18 +6,14 @@ import { NextProject } from "@/app/_components/projects/next-project";
 import { ProjectScreenshots } from "@/app/_components/projects/project-screenshots";
 import { sectionFont } from "@/app/fonts";
 import { Badge } from "@/components/ui/badge";
+import { caseStudyMetadata } from "@/lib/case-study-metadata";
 import { worldsOfProtheka } from "@/data/projects";
 import { worldsOfProthekaScreens } from "@/data/worlds-of-protheka";
 
 const title = "Worlds of Protheka | John Enabore";
 const description = worldsOfProtheka.description;
 
-export const metadata: Metadata = {
-  title,
-  description,
-  openGraph: { type: "article", title, description },
-  twitter: { card: "summary_large_image", title, description },
-};
+export const metadata: Metadata = caseStudyMetadata(title, description, worldsOfProtheka);
 
 const sections = [
   { id: "overview", label: "Overview" },
